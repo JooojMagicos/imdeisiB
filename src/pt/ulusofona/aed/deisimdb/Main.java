@@ -4,15 +4,16 @@ import java.util.*;
 
 
 public class Main
-{ // codigo um
+{ // codigo dois
 
-    static ArrayList<ConstructorFilme> objetoFilmes = new ArrayList<>();
-    static ArrayList<ConstructorAtor> objetoAtores= new ArrayList<>();
-    static ArrayList<ConstructorRealizador> objetoRealizadores = new ArrayList<>();
-    static ArrayList<ConstructorGenero> objetoGeneros = new ArrayList<>();
-    static ArrayList<ConstructorGeneroFilmes> objetoGeneroFilmes = new ArrayList<>();
-    static ArrayList<ConstructorLinhaIncorreta> objetoLinhasIncorretas = new ArrayList<>();
-    static ArrayList<ConstructorMovieVotes> objetoMovieVotes = new ArrayList<>();
+    static ArrayList<ObjetoFIlmes> objetoFilmes = new ArrayList<>();
+    static HashMap<String,String> objetoFilmesHM = new HashMap<>();
+    static ArrayList<ObjetoAtor> objetoAtores= new ArrayList<>();
+    static ArrayList<ObjetoRealizador> objetoRealizadores = new ArrayList<>();
+    static ArrayList<ObjetoGeneros> objetoGeneros = new ArrayList<>();
+    static ArrayList<ObjetoGeneroFilmes> objetoGeneroFilmes = new ArrayList<>();
+    static ArrayList<ObjetoLinhaIncorreta> objetoLinhasIncorretas = new ArrayList<>();
+    static ArrayList<ObjetoMovieVotes> objetoMovieVotes = new ArrayList<>();
     static int[] listaFilmes = new int[0];
 
     static int linhasLidas = 0;
@@ -42,6 +43,7 @@ public class Main
 
 
         File[] files = new File[] {
+
                 new File(folder+"/movies.csv"),
                 new File(folder+"/actors.csv"),
                 new File(folder+"/directors.csv"),
@@ -52,35 +54,22 @@ public class Main
         };
 
 
-        // verifica os arquivo csv
-        if (files.length == 0) {
-            System.out.println("Nenhum arquivo CSV encontrado na pasta.");
-        }
-
-
-
-
-        boolean primeiraLinhas = true;
-        // processa os csv
-
-        int i = 0;
-        int atoresNoFilme = 0;
-
         for (File file : files) {
             try (BufferedReader scanner = new BufferedReader(new FileReader(file))) {// *NOVO* agora com bufferedReader, é mais rápido que scanner para arquivos maiores
 
                 System.out.println("Processando arquivo: " + file.getName());
 
 
-                primeiraLinhas = true;
+                boolean primeiraLinhas = true;
                 linhasErradas = 0;
                 primeiraLinhaErrada = -1; // aqui reseta as variaveis  de contar linhas erradas e tal
                 linhasLidas = 0;
-                i = 0;
+                int i = 0;
                 String linha;
 
                 // isso lê os arquivos linha por linha
-                while ((linha = scanner.readLine()) != null) {
+                while ((linha = scanner.readLine()) != null)
+                {
 
 
                     String[] dados = linha.split(",");
@@ -94,45 +83,54 @@ public class Main
                             } else {
                                 if (dados.length == 5  && !dados[0].isEmpty() && !dados[1].isEmpty()&& !dados[2].isEmpty()&& !dados[3].isEmpty() && !dados[4].isEmpty())  {
 
-
                                     int id;
                                     String nome = dados[1].trim();
                                     String data = dados[4].trim();
 
+                                    try
+                                    {
 
-
-
-                                    try {
                                         id = Integer.parseInt(dados[0].trim());
 
+                                    }
+                                    catch (NumberFormatException e)
+                                    {
 
-                                    }catch (NumberFormatException e) {
                                         linhasErradas++;
+
                                         if (primeiraLinhaErrada == -1 && i != 0){
                                             primeiraLinhaErrada = i;
 
                                         }
+
                                         continue;
                                     }
 
                                     boolean existe = false;
-                                                                                            // esse bagulho aqui é feito de uma forma muito burra
-                                    for (ConstructorFilme filmeExistente : objetoFilmes) { // supostamente existe uma forma mais inteligente de fazer isso
-                                        if (filmeExistente.getIdFilme() == id) {
-                                            linhasLidas++;                                  // fazer as coisas dessa forma demora muito mais que o normal, é reparavel na execução do código
-                                            existe = true;                                 // mas o prof disse que isso era propósital, portanto, do jeito burro será!
 
-                                            break;
-                                        }
+
+
+                                    if (objetoFilmesHM.containsKey(nome)) {
+
+                                        linhasLidas++;
+                                        existe = true;
+
                                     }
 
-                                    if (!existe) {
+
+
+                                    if (!existe)
+                                    {
+
                                         linhasLidas++;
-                                        ConstructorFilme filme = new ConstructorFilme(id, nome, data,atoresNoFilme);
+                                        ObjetoFIlmes filme = new ObjetoFIlmes(id, nome, data,0);
+                                        objetoFilmesHM.put(nome,data);
                                         objetoFilmes.add(filme);
+
                                     }
 
                                 }
+
                                 else
                                 {
                                     linhasErradas++;
@@ -141,6 +139,7 @@ public class Main
 
                                     }
                                 }
+
                             }
 
                         }
@@ -154,9 +153,10 @@ public class Main
                                 if (dados.length == 4 && !dados[2].isEmpty() && !dados[0].isEmpty() && !dados[1].isEmpty() && !dados[3].isEmpty()) {
 
                                     int id;
-                                    int idFilme;    
+                                    int idFilme;
                                     linhasLidas++;
-                                    atoresNoFilme =1;
+                                    int atrizesNoFilme = 0;
+                                    int atoresNoFilme = 0;
 
                                     try {
 
@@ -173,45 +173,41 @@ public class Main
                                         continue;
                                     }
 
+                                    String nome = dados[1].trim();
+                                    String genero = dados[2].trim();
+                                    ObjetoAtor ator = new ObjetoAtor(id, nome, genero, idFilme);
+                                    objetoAtores.add(ator);
 
-                                    if (idFilme<1000 )
+                                    for (ObjetoAtor atorNoFilme : objetoAtores)
                                     {
 
-                                        // *NOVO* criei esse for aqui para verificar se o filme já foi listado
-                                        for (int filmes = 0; filmes < listaFilmes.length; filmes++)
+                                        if (atorNoFilme.getMovieId() == idFilme && atorNoFilme.getGender().equals("Feminino"))
                                         {
-                                            if (listaFilmes[filmes] == idFilme) continue;
-
+                                            atrizesNoFilme++;
                                         }
-                                        listaFilmes = Arrays.copyOf(listaFilmes, listaFilmes.length + 1);
-                                        for (ConstructorAtor atorNoFilme : objetoAtores)
-
-
+                                        if (atorNoFilme.getMovieId() == idFilme && atorNoFilme.getGender().equals("Masculino"))
                                         {
-                                            if (atorNoFilme.getMovieId() == idFilme)
-                                            {
-                                                atoresNoFilme++;
-
-                                            }
+                                            atoresNoFilme++;
                                         }
-                                        for (ConstructorFilme filmeMudar : objetoFilmes)
+
+                                    }
+
+                                    for (ObjetoFIlmes filmeMudar : objetoFilmes)
+                                    {
+
+                                        if (filmeMudar.getIdFilme() == idFilme)
                                         {
-                                            if (filmeMudar.getIdFilme() == idFilme)
-                                            {
-                                               filmeMudar.setNumAtores(atoresNoFilme);
-                                            }
+
+                                            filmeMudar.setNumAtoresF(atrizesNoFilme);
+                                            filmeMudar.setNumAtoresM(atoresNoFilme);
+
                                         }
 
                                     }
 
 
+                                    // adicionando o ator ao objeto
 
-                                    String nome = dados[1].trim();
-                                    String genero = dados[2].trim();
-
-
-                                    ConstructorAtor ator = new ConstructorAtor(id, nome, genero, idFilme);
-                                    objetoAtores.add(ator);
 
 
                                 }
@@ -251,7 +247,7 @@ public class Main
                                     String nome = dados[1].trim();
 
 
-                                    ConstructorRealizador realizador = new ConstructorRealizador(id, nome, movieId);
+                                    ObjetoRealizador realizador = new ObjetoRealizador(id, nome, movieId);
                                     objetoRealizadores.add(realizador);
                                 }
                                 else
@@ -290,7 +286,7 @@ public class Main
                                         break;
                                     }
 
-                                    ConstructorGenero genero = new ConstructorGenero(genreName,genreId);
+                                    ObjetoGeneros genero = new ObjetoGeneros(genreName,genreId);
                                     objetoGeneros.add(genero);
 
                                 }
@@ -331,7 +327,7 @@ public class Main
                                         break;
                                     }
 
-                                    ConstructorGeneroFilmes generoFilme = new ConstructorGeneroFilmes(movieId,genreId);
+                                    ObjetoGeneroFilmes generoFilme = new ObjetoGeneroFilmes(movieId,genreId);
                                     objetoGeneroFilmes.add(generoFilme);
 
                                 }
@@ -375,7 +371,7 @@ public class Main
                                         break;
                                     }
 
-                                    ConstructorMovieVotes movieVotes1 = new ConstructorMovieVotes(movieId,movieRating,movieVotes);
+                                    ObjetoMovieVotes movieVotes1 = new ObjetoMovieVotes(movieId,movieRating,movieVotes);
                                     objetoMovieVotes.add(movieVotes1);
 
                                 }
@@ -395,7 +391,7 @@ public class Main
 
                 }
 
-                ConstructorLinhaIncorreta linhas = new ConstructorLinhaIncorreta(file.getName(), linhasLidas,linhasErradas,primeiraLinhaErrada);
+                ObjetoLinhaIncorreta linhas = new ObjetoLinhaIncorreta(file.getName(), linhasLidas,linhasErradas,primeiraLinhaErrada);
                 objetoLinhasIncorretas.add(linhas);
 
             } catch (FileNotFoundException e) {
@@ -457,12 +453,12 @@ public class Main
         long end = System.currentTimeMillis();
         System.out.println("Ficheiros lidos com sucesso em " + (end - start)+ " ms");
 
-        ArrayList<ConstructorLinhaIncorreta> filmes = objetoLinhasIncorretas;
-        ArrayList<ConstructorFilme> filmes1 = objetoFilmes;
+        ArrayList<ObjetoLinhaIncorreta> filmes = objetoLinhasIncorretas;
+        ArrayList<ObjetoFIlmes> filmes1 = objetoFilmes;
 
       for (Object printafilmes : filmes) // isso aqui testa se ele vai printar tudo direitinho, só basta mudar o .filme pra outra coisa
        {
-           System.out.println(printafilmes.toString());
+           System.out.println(printafilmes.toString()+"\n");
        }
       for (Object printafilmes : filmes1)
       {

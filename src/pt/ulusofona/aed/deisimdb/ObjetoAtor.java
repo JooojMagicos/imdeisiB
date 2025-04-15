@@ -1,6 +1,6 @@
 package pt.ulusofona.aed.deisimdb;
 
-public class ConstructorAtor {
+public class ObjetoAtor {
 
     private int id;
     private String nome;
@@ -8,7 +8,7 @@ public class ConstructorAtor {
     private int movieId;
 
 
-    public ConstructorAtor(int id, String nome, String gender, int movieId)
+    public ObjetoAtor(int id, String nome, String gender, int movieId)
     {
 
         this.id = id;
@@ -18,7 +18,7 @@ public class ConstructorAtor {
         {
             case "F" -> this.gender = "Feminino";
             case "M" -> this.gender = "Masculino";
-            default -> this.gender = null;
+            default -> this.gender = "";
 
         }
 
@@ -37,6 +37,7 @@ public class ConstructorAtor {
     {
         return movieId;
     }
+    public String getGender() { return gender; }
 
     @Override
     public String toString() {

@@ -1,11 +1,11 @@
 package pt.ulusofona.aed.deisimdb;
 
-public class ConstructorGenero {
+public class ObjetoGeneros {
 
     private String genero;
     private int id;
 
-    public ConstructorGenero(String genero, int id)
+    public ObjetoGeneros(String genero, int id)
     {
         this.id = id;
         this.genero = genero;

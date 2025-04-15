@@ -1,11 +1,11 @@
 package pt.ulusofona.aed.deisimdb;
 
-public class ConstructorGeneroFilmes {
+public class ObjetoGeneroFilmes {
 
     private int genreId;
     private int movieId;
 
-    public ConstructorGeneroFilmes(int genreId, int movieId)
+    public ObjetoGeneroFilmes(int genreId, int movieId)
     {
         this.genreId = genreId;
         this.movieId = movieId;

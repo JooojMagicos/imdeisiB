@@ -1,11 +1,11 @@
 package pt.ulusofona.aed.deisimdb;
 
-public class ConstructorMovieVotes {
+public class ObjetoMovieVotes {
     private int movieId;
     private double movieRating;
     private int movieVotes;
 
-    ConstructorMovieVotes(int movieId, double movieRating, int movieVotes)
+    ObjetoMovieVotes(int movieId, double movieRating, int movieVotes)
     {
         this.movieId = movieId;
         this.movieRating = movieRating;

@@ -1,6 +1,6 @@
 package pt.ulusofona.aed.deisimdb;
 
-public class ConstructorRealizador {
+public class ObjetoRealizador {
 
 
     private int id;
@@ -8,7 +8,7 @@ public class ConstructorRealizador {
     private int movieId;
 
 
-    public ConstructorRealizador(int id, String nome, int movieId) // ctrl c ctrl v histórico do constructor filmes
+    public ObjetoRealizador(int id, String nome, int movieId) // ctrl c ctrl v histórico do constructor filmes
     {
         this.id = id;
         this.nome = nome;
