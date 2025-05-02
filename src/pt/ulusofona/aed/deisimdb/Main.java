@@ -302,11 +302,14 @@ public class Main
                         }
                         case "genres_movies.csv" ->
                         {
+                            int numGporfilme = 0;
                             if (primeiraLinhas)
                             {
                                 primeiraLinhas = false;
                             }
-                            else {
+                            else
+                            {
+
                                 if (dados.length == 2 && !dados[0].isEmpty() && !dados[1].isEmpty()){
 
                                     int genreId;
@@ -329,6 +332,17 @@ public class Main
 
                                     ObjetoGeneroFilmes generoFilme = new ObjetoGeneroFilmes(movieId,genreId);
                                     objetoGeneroFilmes.add(generoFilme);
+
+                                    for (ObjetoFIlmes filmes : objetoFilmes)
+                                    {
+                                        if (filmes.getIdFilme() == movieId)
+                                        {
+                                            numGporfilme = 1;
+                                            filmes.setNumGeneros(numGporfilme);
+                                            break;
+                                        }
+                                    }
+
 
                                 }
                                 else
