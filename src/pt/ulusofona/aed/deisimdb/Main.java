@@ -6,14 +6,24 @@ import java.util.*;
 public class Main
 { // codigo dois
 
+
+    // HASMAP ARRAY LIST FILMES
     static ArrayList<ObjetoFIlmes> objetoFilmes = new ArrayList<>();
     static HashMap<String,String> objetoFilmesHM = new HashMap<>();
-    static ArrayList<ObjetoAtor> objetoAtores= new ArrayList<>();
-    static ArrayList<ObjetoRealizador> objetoRealizadores = new ArrayList<>();
+
+    // HASHMAP ARRAYLIST GENEROS
     static ArrayList<ObjetoGeneros> objetoGeneros = new ArrayList<>();
+    static HashMap<Integer,String> objetoGenerosHM = new HashMap<>();
+
+    // HASHMAP ARRAYLIST REALIZADORES
+    static ArrayList<ObjetoRealizador> objetoRealizadores = new ArrayList<>();
+    static HashMap<Integer,String> objetoRealizadoresHM = new HashMap<>();
+
+    static ArrayList<ObjetoAtor> objetoAtores= new ArrayList<>();
     static ArrayList<ObjetoGeneroFilmes> objetoGeneroFilmes = new ArrayList<>();
     static ArrayList<ObjetoLinhaIncorreta> objetoLinhasIncorretas = new ArrayList<>();
     static ArrayList<ObjetoMovieVotes> objetoMovieVotes = new ArrayList<>();
+
     static int[] listaFilmes = new int[0];
 
     static int linhasLidas = 0;
@@ -232,6 +242,8 @@ public class Main
                                     int id;
                                     int movieId;
                                     linhasLidas++;
+                                    int numRfilme;
+
                                     try {
 
                                         id = Integer.parseInt(dados[0].trim());
@@ -249,6 +261,20 @@ public class Main
 
                                     ObjetoRealizador realizador = new ObjetoRealizador(id, nome, movieId);
                                     objetoRealizadores.add(realizador);
+
+
+                                    for (ObjetoFIlmes filmes : objetoFilmes)
+                                    {
+                                        if (filmes.getIdFilme() == movieId)
+                                        {
+                                            numRfilme = 1;
+                                            filmes.setNumRealizadores(numRfilme);
+                                            filmes.setRealizadores(nome);
+                                            break;
+
+                                        }
+                                    }
+
                                 }
                                 else
                                 {
@@ -278,16 +304,19 @@ public class Main
 
                                     }catch (NumberFormatException e)
                                     {
+
                                         linhasErradas++;
                                         if (primeiraLinhaErrada == -1 && i!=0)
                                         {
                                             primeiraLinhaErrada = i;
                                         }
                                         break;
+
                                     }
 
                                     ObjetoGeneros genero = new ObjetoGeneros(genreName,genreId);
                                     objetoGeneros.add(genero);
+                                    objetoGenerosHM.put(genreId,genreName);
 
                                 }
                                 else
@@ -333,14 +362,21 @@ public class Main
                                     ObjetoGeneroFilmes generoFilme = new ObjetoGeneroFilmes(movieId,genreId);
                                     objetoGeneroFilmes.add(generoFilme);
 
+
                                     for (ObjetoFIlmes filmes : objetoFilmes)
                                     {
+
                                         if (filmes.getIdFilme() == movieId)
                                         {
+
                                             numGporfilme = 1;
                                             filmes.setNumGeneros(numGporfilme);
+
+                                            filmes.setGeneros(objetoGenerosHM.get(genreId));
+
                                             break;
                                         }
+
                                     }
 
 

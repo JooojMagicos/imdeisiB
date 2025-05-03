@@ -1,6 +1,8 @@
 package pt.ulusofona.aed.deisimdb;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class ObjetoFIlmes {
 
@@ -10,9 +12,9 @@ public class ObjetoFIlmes {
     private int numAtores;
     private int numAtrizes;
     private int numRealizadores;
-    private String realizadores;
+    private ArrayList<String> realizadores = new ArrayList<>();
     private int numGeneros;
-    private String generosNomes;
+    private ArrayList<String> generosNomes = new ArrayList<>();
 
     public ObjetoFIlmes(int id, String nome, String ano, int numAtores)
     {
@@ -24,6 +26,7 @@ public class ObjetoFIlmes {
         this.ano = anoInvertido[2].trim()+"-"+anoInvertido[1].trim()+"-"+anoInvertido[0].trim();
 
     }
+
 
     // funçoes de set e get --------
 
@@ -44,9 +47,13 @@ public class ObjetoFIlmes {
 
     public void setNumAtoresF(int numAtores) { this.numAtrizes = numAtores; }
 
-    public void setNumRealizadores(int numRealizadores) { this.numRealizadores = numRealizadores; }
+    public void setNumRealizadores(int numRealizadores) { this.numRealizadores += numRealizadores; }
 
     public void setNumGeneros(int numGeneros){ this.numGeneros += numGeneros; }
+
+    public void setRealizadores(String realizadores){ this.realizadores.add(realizadores); Collections.sort(this.realizadores);}
+
+    public void setGeneros(String generos){ this.generosNomes.add(generos); Collections.sort(this.generosNomes);}
 
     // funçoes de set e get ---------
 
@@ -61,7 +68,7 @@ public class ObjetoFIlmes {
         else
         {
 
-            return  id + " | " + nome + " | " + ano + " | "+generosNomes+" | "+realizadores+" | "+numAtores+" | "+numAtrizes; // generos e realizadores por extenso e ordem alfavbetica
+            return  id + " | " + nome + " | " + ano + " | "+generosNomes+" | "+ realizadores +" | "+numAtores+" | "+numAtrizes; // generos e realizadores por extenso e ordem alfavbetica
 
         }
 
