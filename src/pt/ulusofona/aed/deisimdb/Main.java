@@ -7,14 +7,13 @@ public class Main
 { // codigo dois
 
 
-    // HASMAP ARRAY LIST FILMES
+    // FODASE ARRAY LIST, DA PRA GUARDAR TUDO EM HASHMAP KKKKKKKKKKKKKKKK
+    static HashMap<Integer,ObjetoFIlmes> objetoFilmesHM = new HashMap<>();
     static ArrayList<ObjetoFIlmes> objetoFilmes = new ArrayList<>();
-    static HashMap<String,String> objetoFilmesHM = new HashMap<>();
 
     // HASHMAP ARRAYLIST GENEROS
-    static ArrayList<ObjetoGeneros> objetoGeneros = new ArrayList<>();
     static HashMap<Integer,String> objetoGenerosHM = new HashMap<>();
-
+    static ArrayList<ObjetoGeneros> objetoGeneros = new ArrayList<>();
     // HASHMAP ARRAYLIST REALIZADORES
     static ArrayList<ObjetoRealizador> objetoRealizadores = new ArrayList<>();
     static HashMap<Integer,String> objetoRealizadoresHM = new HashMap<>();
@@ -24,7 +23,6 @@ public class Main
     static ArrayList<ObjetoLinhaIncorreta> objetoLinhasIncorretas = new ArrayList<>();
     static ArrayList<ObjetoMovieVotes> objetoMovieVotes = new ArrayList<>();
 
-    static int[] listaFilmes = new int[0];
 
     static int linhasLidas = 0;
     static int linhasErradas = 0;
@@ -36,10 +34,16 @@ public class Main
     public static boolean parseFiles(File folder) throws IOException {
 
         // reseta as variaveis dessa bosta
+        objetoFilmesHM = new HashMap<>();
         objetoFilmes = new ArrayList<>();
-        objetoGeneros = new ArrayList<>();
-        objetoAtores = new ArrayList<>();
+
+        objetoRealizadoresHM = new HashMap<>();
         objetoRealizadores = new ArrayList<>();
+
+        objetoGenerosHM = new HashMap<>();
+        objetoGeneros = new ArrayList<>();
+
+        objetoAtores = new ArrayList<>();
         objetoLinhasIncorretas = new ArrayList<>();
         objetoGeneroFilmes = new ArrayList<>();
         objetoMovieVotes = new ArrayList<>();
@@ -120,7 +124,7 @@ public class Main
 
 
 
-                                    if (objetoFilmesHM.containsKey(nome)) {
+                                    if (objetoFilmesHM.containsKey(id)) {
 
                                         linhasLidas++;
                                         existe = true;
@@ -134,9 +138,8 @@ public class Main
 
                                         linhasLidas++;
                                         ObjetoFIlmes filme = new ObjetoFIlmes(id, nome, data,0);
-                                        objetoFilmesHM.put(nome,data);
+                                        objetoFilmesHM.put(id,filme);
                                         objetoFilmes.add(filme);
-
                                     }
 
                                 }
@@ -165,8 +168,6 @@ public class Main
                                     int id;
                                     int idFilme;
                                     linhasLidas++;
-                                    int atrizesNoFilme = 0;
-                                    int atoresNoFilme = 0;
 
                                     try {
 
@@ -188,32 +189,19 @@ public class Main
                                     ObjetoAtor ator = new ObjetoAtor(id, nome, genero, idFilme);
                                     objetoAtores.add(ator);
 
-                                    for (ObjetoAtor atorNoFilme : objetoAtores)
-                                    {
 
-                                        if (atorNoFilme.getMovieId() == idFilme && atorNoFilme.getGender().equals("Feminino"))
-                                        {
-                                            atrizesNoFilme++;
-                                        }
-                                        if (atorNoFilme.getMovieId() == idFilme && atorNoFilme.getGender().equals("Masculino"))
-                                        {
-                                            atoresNoFilme++;
-                                        }
+                                    if (objetoFilmesHM.containsKey(idFilme))
+                                    {
+                                        ObjetoFIlmes filme = objetoFilmesHM.get(idFilme);
+                                        objetoFilmes.remove(filme);
+                                        filme.setNumAtores(genero);
+                                        objetoFilmesHM.replace(idFilme,filme);
+                                        objetoFilmes.add(filme);
+
 
                                     }
 
-                                    for (ObjetoFIlmes filmeMudar : objetoFilmes)
-                                    {
 
-                                        if (filmeMudar.getIdFilme() == idFilme)
-                                        {
-
-                                            filmeMudar.setNumAtoresF(atrizesNoFilme);
-                                            filmeMudar.setNumAtoresM(atoresNoFilme);
-
-                                        }
-
-                                    }
 
 
                                     // adicionando o ator ao objeto
@@ -242,7 +230,6 @@ public class Main
                                     int id;
                                     int movieId;
                                     linhasLidas++;
-                                    int numRfilme;
 
                                     try {
 
@@ -263,17 +250,15 @@ public class Main
                                     objetoRealizadores.add(realizador);
 
 
-                                    for (ObjetoFIlmes filmes : objetoFilmes)
+                                    if (objetoFilmesHM.containsKey(movieId))
                                     {
-                                        if (filmes.getIdFilme() == movieId)
-                                        {
-                                            numRfilme = 1;
-                                            filmes.setNumRealizadores(numRfilme);
-                                            filmes.setRealizadores(nome);
-                                            break;
-
-                                        }
+                                        ObjetoFIlmes filme = objetoFilmesHM.get(movieId);
+                                        filme.setNumRealizadores(1);
+                                        filme.setRealizadores(nome);
+                                        objetoFilmesHM.replace(movieId,filme);
                                     }
+
+
 
                                 }
                                 else
@@ -363,20 +348,14 @@ public class Main
                                     objetoGeneroFilmes.add(generoFilme);
 
 
-                                    for (ObjetoFIlmes filmes : objetoFilmes)
+                                    if (objetoFilmesHM.containsKey(movieId))
                                     {
-
-                                        if (filmes.getIdFilme() == movieId)
-                                        {
-
-                                            numGporfilme = 1;
-                                            filmes.setNumGeneros(numGporfilme);
-
-                                            filmes.setGeneros(objetoGenerosHM.get(genreId));
-
-                                            break;
-                                        }
-
+                                        ObjetoFIlmes filme = objetoFilmesHM.get(movieId);
+                                        objetoFilmes.remove(filme);
+                                        filme.setGeneros(objetoGenerosHM.get(genreId));
+                                        filme.setNumGeneros(1);
+                                        objetoFilmesHM.replace(movieId,filme);
+                                        objetoFilmes.add(filme);
                                     }
 
 

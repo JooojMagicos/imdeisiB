@@ -12,9 +12,9 @@ public class ObjetoFIlmes {
     private int numAtores;
     private int numAtrizes;
     private int numRealizadores;
-    private ArrayList<String> realizadores = new ArrayList<>();
+    private final ArrayList<String> realizadores = new ArrayList<>();
     private int numGeneros;
-    private ArrayList<String> generosNomes = new ArrayList<>();
+    private final ArrayList<String> generosNomes = new ArrayList<>();
 
     public ObjetoFIlmes(int id, String nome, String ano, int numAtores)
     {
@@ -41,11 +41,16 @@ public class ObjetoFIlmes {
         return ano;
     }
 
-    public void setNumAtoresM(int numAtores) {
-        this.numAtores = numAtores;
+    public void setNumAtores(String gen) {
+        if (gen.equals("F"))
+        {
+            this.numAtrizes++;
+        }
+        if (gen.equals("M"))
+        {
+            this.numAtores++;
+        }
     }
-
-    public void setNumAtoresF(int numAtores) { this.numAtrizes = numAtores; }
 
     public void setNumRealizadores(int numRealizadores) { this.numRealizadores += numRealizadores; }
 
