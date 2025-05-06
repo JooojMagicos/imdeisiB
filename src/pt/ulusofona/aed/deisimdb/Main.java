@@ -50,10 +50,10 @@ public class Main
 
 
 
-        if (!folder.exists() || !folder.isDirectory()) {
-            System.out.println("A pasta fornecida não existe ou não é um diretório.");
-            return false;
-        }
+//        if (!folder.exists() || !folder.isDirectory()) {
+//            System.out.println("A pasta fornecida não existe ou não é um diretório.");
+//            return false;
+//        }
 
 
         File[] files = new File[] {
@@ -169,6 +169,7 @@ public class Main
                                     int idFilme;
                                     linhasLidas++;
 
+
                                     try {
 
                                         id = Integer.parseInt(dados[0].trim());
@@ -189,24 +190,15 @@ public class Main
                                     ObjetoAtor ator = new ObjetoAtor(id, nome, genero, idFilme);
                                     objetoAtores.add(ator);
 
-
                                     if (objetoFilmesHM.containsKey(idFilme))
                                     {
                                         ObjetoFIlmes filme = objetoFilmesHM.get(idFilme);
-                                        objetoFilmes.remove(filme);
+                                        int indexFilme = objetoFilmes.indexOf(filme);
                                         filme.setNumAtores(genero);
                                         objetoFilmesHM.replace(idFilme,filme);
-                                        objetoFilmes.add(filme);
-
+                                        objetoFilmes.set(indexFilme,filme);
 
                                     }
-
-
-
-
-                                    // adicionando o ator ao objeto
-
-
 
                                 }
                                 else
@@ -253,9 +245,11 @@ public class Main
                                     if (objetoFilmesHM.containsKey(movieId))
                                     {
                                         ObjetoFIlmes filme = objetoFilmesHM.get(movieId);
+                                        int indexFilme = objetoFilmes.indexOf(filme);
                                         filme.setNumRealizadores(1);
                                         filme.setRealizadores(nome);
                                         objetoFilmesHM.replace(movieId,filme);
+                                        objetoFilmes.set(indexFilme,filme);
                                     }
 
 
@@ -351,11 +345,13 @@ public class Main
                                     if (objetoFilmesHM.containsKey(movieId))
                                     {
                                         ObjetoFIlmes filme = objetoFilmesHM.get(movieId);
-                                        objetoFilmes.remove(filme);
+                                        int indexFilme = objetoFilmes.indexOf(filme);
+
                                         filme.setGeneros(objetoGenerosHM.get(genreId));
                                         filme.setNumGeneros(1);
+
                                         objetoFilmesHM.replace(movieId,filme);
-                                        objetoFilmes.add(filme);
+                                        objetoFilmes.set(indexFilme,filme);
                                     }
 
 
@@ -465,6 +461,11 @@ public class Main
         return new ArrayList<>(); // lembrar de criar um negocio pra deixar isso mais bonitinho, retorna um array vazio caso o tipoentidade incorreto
     }
 
+    public static Result execute(String command)
+    {
+        return new Result(false,"","");
+    }
+
     public static void main(String[] args) throws IOException {
 
         System.out.println("Bem-vindo ao deisIMDB");
@@ -489,10 +490,11 @@ public class Main
        {
            System.out.println(printafilmes.toString()+"\n");
        }
-      for (Object printafilmes : filmes1)
-      {
-          System.out.println(printafilmes.toString());
-      }
+        System.out.println(filmes1.get(0));
+//      for (Object printafilmes : filmes1)
+//      {
+//          System.out.println(printafilmes.toString());
+//      }
 
     }
 }

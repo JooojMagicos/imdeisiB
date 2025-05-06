@@ -73,7 +73,29 @@ public class ObjetoFIlmes {
         else
         {
 
-            return  id + " | " + nome + " | " + ano + " | "+generosNomes+" | "+ realizadores +" | "+numAtores+" | "+numAtrizes; // generos e realizadores por extenso e ordem alfavbetica
+            String realizadoresExt = "";
+
+            for (int i = 0; i<realizadores.size(); i++)
+            {
+                realizadoresExt += realizadores.get(i);
+                if (i != realizadores.size()-1)
+                {
+                    realizadoresExt += ",";
+                }
+            }
+
+            String generosExt = "";
+
+            for (int i = 0; i<generosNomes.size(); i++)
+            {
+                generosExt += generosNomes.get(i);
+                if (i != generosNomes.size()-1)
+                {
+                    generosExt += ",";
+                }
+            }
+
+            return  id + " | " + nome + " | " + ano + " | "+generosExt+" | "+ realizadoresExt +" | "+numAtores+" | "+numAtrizes; // generos e realizadores por extenso e ordem alfavbetica
 
         }
 
