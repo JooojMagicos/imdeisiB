@@ -612,7 +612,11 @@ public class Main
       hmcoisa.put("a","b");
       hmcoisa.put("c","b");
 
-        System.out.println(execute("COUNT_MOVIES_DIRECTOR Quentin Tarantino").result);
+      start = System.currentTimeMillis();
+      System.out.println(execute("COUNT_MOVIES_MONTH_YEAR 5 2005").result);
+      end = System.currentTimeMillis();
+
+      System.out.println(end-start);
 
     }
 }
