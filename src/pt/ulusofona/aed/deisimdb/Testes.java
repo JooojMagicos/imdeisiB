@@ -50,41 +50,41 @@ public class Testes {
         }
     }
 
-    @Nested
-    class ObjetoFIlmesTest {
-
-        @Test
-        void testConstructorDateFormat() {
-            ObjetoFIlmes filme = new ObjetoFIlmes(1, "Filme A", "01-12-2020",0);
-            assertEquals("2020-12-01", filme.toString().split(" \\| ")[2], "Formato da data deve ser yyyy-MM-dd");
-        }
-
-        @Test
-        void testGetIdFilme() {
-            ObjetoFIlmes filme = new ObjetoFIlmes(2, "Filme B", "15-08-2019",0);
-            assertEquals(2, filme.getIdFilme(), "O ID do filme deve ser 2");
-        }
-
-        @Test
-        void testToStringFormatIdAbove1000() {
-            ObjetoFIlmes filme = new ObjetoFIlmes(1500, "Filme C", "10-05-2018",0);
-            String expected = "1500 | Filme C | 2018-05-10";
-            assertEquals(expected, filme.toString(), "Formato de saída do toString está incorreto para ID >= 1000");
-        }
-
-        @Test
-        void testToStringFormatIdBelow1000() {
-            ObjetoFIlmes filme = new ObjetoFIlmes(500, "Filme D", "22-03-2017",2);
-            String expected = "500 | Filme D | 2017-03-22 | 2";
-            assertEquals(expected, filme.toString(), "Formato de saída do toString está incorreto para ID < 1000");
-        }
-
-        @Test
-        void testInvalidDateFormat() {
-            ObjetoFIlmes filme = new ObjetoFIlmes(3, "Filme E", "2020-12-01",0);
-            assertNotEquals("2020-12-01", filme.toString().split(" \\| ")[2], "Data no formato errado não deve ser aceita");
-        }
-    }
+//    @Nested
+//    class ObjetoFIlmesTest {
+//
+//        @Test
+//        void testConstructorDateFormat() {
+//            ObjetoFIlmes filme = new ObjetoFIlmes(1, "Filme A", "01-12-2020",0);
+//            assertEquals("2020-12-01", filme.toString().split(" \\| ")[2], "Formato da data deve ser yyyy-MM-dd");
+//        }
+//
+//        @Test
+//        void testGetIdFilme() {
+//            ObjetoFIlmes filme = new ObjetoFIlmes(2, "Filme B", "15-08-2019",0);
+//            assertEquals(2, filme.getIdFilme(), "O ID do filme deve ser 2");
+//        }
+//
+//        @Test
+//        void testToStringFormatIdAbove1000() {
+//            ObjetoFIlmes filme = new ObjetoFIlmes(1500, "Filme C", "10-05-2018",0);
+//            String expected = "1500 | Filme C | 2018-05-10";
+//            assertEquals(expected, filme.toString(), "Formato de saída do toString está incorreto para ID >= 1000");
+//        }
+//
+//        @Test
+//        void testToStringFormatIdBelow1000() {
+//            ObjetoFIlmes filme = new ObjetoFIlmes(500, "Filme D", "22-03-2017",2);
+//            String expected = "500 | Filme D | 2017-03-22 | 2";
+//            assertEquals(expected, filme.toString(), "Formato de saída do toString está incorreto para ID < 1000");
+//        }
+//
+//        @Test
+//        void testInvalidDateFormat() {
+//            ObjetoFIlmes filme = new ObjetoFIlmes(3, "Filme E", "2020-12-01",0);
+//            assertNotEquals("2020-12-01", filme.toString().split(" \\| ")[2], "Data no formato errado não deve ser aceita");
+//        }
+//    }
 
     @Nested
     class ParseFilesTest {

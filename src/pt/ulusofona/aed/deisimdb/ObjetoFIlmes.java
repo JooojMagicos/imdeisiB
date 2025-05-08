@@ -16,14 +16,14 @@ public class ObjetoFIlmes {
     private int numGeneros;
     private final ArrayList<String> generosNomes = new ArrayList<>();
 
-    public ObjetoFIlmes(int id, String nome, String ano, int numAtores)
+    public ObjetoFIlmes(int id, String nome, String[] ano, int numAtores)
     {
 
         this.id = id;
         this.nome = nome;
         this.numAtores = numAtores;
-        String[] anoInvertido = ano.split("-");
-        this.ano = anoInvertido[2].trim()+"-"+anoInvertido[1].trim()+"-"+anoInvertido[0].trim();
+
+        this.ano = ano[2].trim()+"-"+ano[1].trim()+"-"+ano[0].trim();
 
     }
 
@@ -37,8 +37,9 @@ public class ObjetoFIlmes {
 
     public String getNome() { return nome; }
 
-    public String getAno() {
-        return ano;
+    public String getMesAno() {
+        String[] mesAno = ano.split("-");
+        return mesAno[1]+mesAno[0];
     }
 
     public void setNumAtores(String gen) {

@@ -1,6 +1,7 @@
 package pt.ulusofona.aed.deisimdb;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class Main
@@ -10,6 +11,7 @@ public class Main
     // FODASE ARRAY LIST, DA PRA GUARDAR TUDO EM HASHMAP KKKKKKKKKKKKKKKK
     static HashMap<Integer,ObjetoFIlmes> objetoFilmesHM = new HashMap<>();
     static ArrayList<ObjetoFIlmes> objetoFilmes = new ArrayList<>();
+
 
     // HASHMAP ARRAYLIST GENEROS
     static HashMap<Integer,String> objetoGenerosHM = new HashMap<>();
@@ -99,7 +101,8 @@ public class Main
 
                                     int id;
                                     String nome = dados[1].trim();
-                                    String data = dados[4].trim();
+                                    String[] data = dados[4].trim().split("-");
+
 
                                     try
                                     {
@@ -463,6 +466,68 @@ public class Main
 
     public static Result execute(String command)
     {
+
+        ArrayList<String> entradas = new ArrayList<>();
+        String comando = "";
+        String atual = "";
+
+        for (int i = 0; i<command.length();i++)
+        {
+
+            if (command.charAt(i) == ' ' && comando.equals(""))
+            {
+                comando = atual;
+                atual = "";
+                continue;
+            }
+
+            if (command.charAt(i) == ' ')
+            {
+                entradas.add(atual);
+                atual = "";
+                continue;
+            }
+
+            if (command.length()-1 == i)
+            {
+                atual += command.charAt(i);
+                entradas.add(atual);
+                continue;
+            }
+
+            atual += command.charAt(i);
+        }
+
+        switch (comando)
+        {
+            case "HELP" ->
+            {
+                System.out.println("COUNT_MOVIES_MONTH_YEAR <MONTH> <YEAR>\n" +
+                        "COUNT_MOVIES_DIRECTOR  <FULL-NAME>\n" +
+                        "COUNT_ACTORS_IN_2_YEARS <YEAR-1> <YEAR-2>\n" +
+                        "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS <YEAR-START> <YEAR-END> <MIN> <MAX>");
+            }
+            case "COUNT_MOVIES_MONTH_YEAR" ->
+            {
+                if (entradas.size() != 2)
+                {
+                    return new Result(false,"Entrada Inválida","");
+                }
+
+
+                final Integer[] qntdFilmes = {0}; // nao sei porque isso funciona, mas funciona. Tambem deve ocupar mais memoria
+
+                objetoFilmesHM.forEach((key,value) -> // isso parece lento, talvez precise fazer algo diferente
+                {
+                    if (value.getMesAno().equals(entradas.get(0)+entradas.get(1))) 
+                    {
+                        qntdFilmes[0]++;
+                    }
+                });
+                return new Result(true,"", qntdFilmes[0].toString());
+            }
+        }
+
         return new Result(false,"","");
     }
 
@@ -490,11 +555,23 @@ public class Main
        {
            System.out.println(printafilmes.toString()+"\n");
        }
-        System.out.println(filmes1.get(0));
-//      for (Object printafilmes : filmes1)
-//      {
-//          System.out.println(printafilmes.toString());
-//      }
+      System.out.println(filmes1.getFirst());
+
+      for (Object printafilmes : filmes1)
+      {
+          System.out.println(printafilmes.toString());
+
+      }
+
+
+      HashMap<String,String> hmcoisa = new HashMap<>();
+      hmcoisa.put("a","b");
+      hmcoisa.put("c","b");
+
+      hmcoisa.forEach((chave,valor)-> {
+
+      });
+        System.out.println(execute("COUNT_MOVIES_MONTH_YEAR 04 2015").result);
 
     }
 }

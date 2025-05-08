@@ -5,8 +5,8 @@ import javax.print.attribute.standard.PresentationDirection;
 public class Result {
 
     boolean success;
-    String error = null;
-    String result = null;
+    String error;
+    String result;
 
     public Result(boolean success, String error, String result)
     {
