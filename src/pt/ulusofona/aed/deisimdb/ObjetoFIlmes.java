@@ -42,6 +42,14 @@ public class ObjetoFIlmes {
         return mesAno[1]+mesAno[0];
     }
 
+    public int getAno()
+    {
+        String[] anoano = ano.split("-");
+        return Integer.parseInt(anoano[0]);
+    }
+
+    public int getNumAA() { return  numAtores+numAtrizes;}
+
     public void setNumAtores(String gen) {
         if (gen.equals("F"))
         {

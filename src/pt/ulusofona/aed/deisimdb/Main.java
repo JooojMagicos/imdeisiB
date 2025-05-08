@@ -18,7 +18,7 @@ public class Main
     static ArrayList<ObjetoGeneros> objetoGeneros = new ArrayList<>();
     // HASHMAP ARRAYLIST REALIZADORES
     static ArrayList<ObjetoRealizador> objetoRealizadores = new ArrayList<>();
-    static HashMap<Integer,String> objetoRealizadoresHM = new HashMap<>();
+    static HashMap<String,Integer> objetoRealizadoresHM = new HashMap<>();
 
     static ArrayList<ObjetoAtor> objetoAtores= new ArrayList<>();
     static ArrayList<ObjetoGeneroFilmes> objetoGeneroFilmes = new ArrayList<>();
@@ -243,7 +243,14 @@ public class Main
 
                                     ObjetoRealizador realizador = new ObjetoRealizador(id, nome, movieId);
                                     objetoRealizadores.add(realizador);
-
+                                    if (!objetoRealizadoresHM.containsKey(nome))
+                                    {
+                                        objetoRealizadoresHM.put(nome,1);
+                                    }
+                                    else
+                                    {
+                                        objetoRealizadoresHM.replace(nome,objetoRealizadoresHM.get(nome),objetoRealizadoresHM.get(nome)+1);
+                                    }
 
                                     if (objetoFilmesHM.containsKey(movieId))
                                     {
@@ -474,7 +481,7 @@ public class Main
         for (int i = 0; i<command.length();i++)
         {
 
-            if (command.charAt(i) == ' ' && comando.equals(""))
+            if (command.charAt(i) == ' ' && comando.isEmpty())
             {
                 comando = atual;
                 atual = "";
@@ -500,6 +507,7 @@ public class Main
 
         switch (comando)
         {
+
             case "HELP" ->
             {
                 System.out.println("COUNT_MOVIES_MONTH_YEAR <MONTH> <YEAR>\n" +
@@ -507,13 +515,11 @@ public class Main
                         "COUNT_ACTORS_IN_2_YEARS <YEAR-1> <YEAR-2>\n" +
                         "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS <YEAR-START> <YEAR-END> <MIN> <MAX>");
             }
-            case "COUNT_MOVIES_MONTH_YEAR" ->
-            {
-                if (entradas.size() != 2)
-                {
-                    return new Result(false,"Entrada Inválida","");
-                }
 
+            case "COUNT_MOVIES_MONTH_YEAR" -> // passou os testes
+            {
+
+                if (entradas.get(0).length() == 1){ entradas.set(0,"0"+entradas.get(0)); }
 
                 final Integer[] qntdFilmes = {0}; // nao sei porque isso funciona, mas funciona. Tambem deve ocupar mais memoria
 
@@ -524,7 +530,45 @@ public class Main
                         qntdFilmes[0]++;
                     }
                 });
+
                 return new Result(true,"", qntdFilmes[0].toString());
+            }
+
+            case "COUNT_MOVIES_DIRECTOR" ->
+            {
+                String nomeCompleto = "";
+
+                for (int i = 0; i < entradas.size(); i++)
+                {
+                    nomeCompleto += entradas.get(i);
+
+                    if (i!=entradas.size()-1)
+                    {
+                        nomeCompleto += " ";
+                    }
+
+                }
+                System.out.println(nomeCompleto);
+
+                if (objetoRealizadoresHM.containsKey(nomeCompleto))
+                {
+                    return new Result(true,"",objetoRealizadoresHM.get(nomeCompleto).toString());
+                }
+                else { return new Result(false,"objeto Nao contém nome "+nomeCompleto,"0"); }
+            }
+
+            case "COUNT_ACTORS_IN_2_YEARS" ->
+            {
+                final Integer[] qntActors = {0};
+                objetoFilmesHM.forEach((key,value) ->
+                {
+
+                    if (Integer.parseInt(entradas.get(0))== value.getAno() || Integer.parseInt(entradas.get(1)) == value.getAno())
+                    {
+                        qntActors[0] += value.getNumAA();
+                    }
+                });
+                return new Result(true,"",qntActors[0].toString());
             }
         }
 
@@ -555,7 +599,7 @@ public class Main
        {
            System.out.println(printafilmes.toString()+"\n");
        }
-      System.out.println(filmes1.getFirst());
+
 
       for (Object printafilmes : filmes1)
       {
@@ -568,10 +612,7 @@ public class Main
       hmcoisa.put("a","b");
       hmcoisa.put("c","b");
 
-      hmcoisa.forEach((chave,valor)-> {
-
-      });
-        System.out.println(execute("COUNT_MOVIES_MONTH_YEAR 04 2015").result);
+        System.out.println(execute("COUNT_MOVIES_DIRECTOR Quentin Tarantino").result);
 
     }
 }
