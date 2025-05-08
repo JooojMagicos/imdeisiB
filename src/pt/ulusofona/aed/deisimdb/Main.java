@@ -19,8 +19,10 @@ public class Main
     // HASHMAP ARRAYLIST REALIZADORES
     static ArrayList<ObjetoRealizador> objetoRealizadores = new ArrayList<>();
     static HashMap<String,Integer> objetoRealizadoresHM = new HashMap<>();
-
+    // HASHMAP ARRAYLIST ATORES
     static ArrayList<ObjetoAtor> objetoAtores= new ArrayList<>();
+    static HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM = new HashMap<>();
+
     static ArrayList<ObjetoGeneroFilmes> objetoGeneroFilmes = new ArrayList<>();
     static ArrayList<ObjetoLinhaIncorreta> objetoLinhasIncorretas = new ArrayList<>();
     static ArrayList<ObjetoMovieVotes> objetoMovieVotes = new ArrayList<>();
@@ -46,6 +48,8 @@ public class Main
         objetoGeneros = new ArrayList<>();
 
         objetoAtores = new ArrayList<>();
+        objetoAtoresHM = new HashMap<>();
+
         objetoLinhasIncorretas = new ArrayList<>();
         objetoGeneroFilmes = new ArrayList<>();
         objetoMovieVotes = new ArrayList<>();
@@ -192,6 +196,11 @@ public class Main
                                     String genero = dados[2].trim();
                                     ObjetoAtor ator = new ObjetoAtor(id, nome, genero, idFilme);
                                     objetoAtores.add(ator);
+                                    if (objetoAtoresHM.containsKey(nome))
+                                    {
+                                        objetoAtoresHM.get(nome).add(ator);
+                                    }
+                                    else { ArrayList<ObjetoAtor> atorFilmes = new ArrayList<>(); atorFilmes.add(ator); objetoAtoresHM.put(nome,atorFilmes); }
 
                                     if (objetoFilmesHM.containsKey(idFilme))
                                     {
@@ -570,6 +579,46 @@ public class Main
                 });
                 return new Result(true,"",qntActors[0].toString());
             }
+            case "GET_MOVIES_ACTOR_YEAR" ->
+            {
+                ArrayList<String> filmesDoAtor = new ArrayList<>();
+                String stringSaida = "";
+                String nomeCompleto = "";
+                for (int i = 1; i<entradas.size(); i++)
+                {
+                    nomeCompleto += entradas.get(i);
+
+                    if (entradas.size()-1 != i)
+                    {
+                        nomeCompleto += " ";
+                    }
+                }
+
+                if (objetoAtoresHM.containsKey(nomeCompleto))
+                {
+                    for (ObjetoAtor atores : objetoAtoresHM.get(nomeCompleto))
+                    {
+                        if (objetoFilmesHM.get(atores.getMovieId()).getAno() == Integer.parseInt(entradas.get(0)))
+                        {
+                            filmesDoAtor.add(objetoFilmesHM.get(atores.getMovieId()).getNome());
+                        }
+                    }
+                }
+                for (int i = 0; i < filmesDoAtor.size(); i++)
+                {
+                    stringSaida += filmesDoAtor.get(i);
+                    if (filmesDoAtor.size()-1 != i)
+                    {
+                        stringSaida += "\n";
+                    }
+                }
+                if (filmesDoAtor.isEmpty())
+                {
+                    return new Result(false,"nenhum filme","No Results");
+                }
+                return new Result(true,"",stringSaida);
+
+            }
         }
 
         return new Result(false,"","");
@@ -613,10 +662,10 @@ public class Main
       hmcoisa.put("c","b");
 
       start = System.currentTimeMillis();
-      System.out.println(execute("COUNT_MOVIES_MONTH_YEAR 5 2005").result);
+      System.out.println(execute("GET_MOVIES_ACTOR_YEAR 2006 Keanu Reeves").result);
       end = System.currentTimeMillis();
 
-      System.out.println(end-start);
+      System.out.println("demorou "+ (end-start) +" ms");
 
     }
 }

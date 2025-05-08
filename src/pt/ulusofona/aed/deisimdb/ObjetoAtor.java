@@ -7,7 +7,6 @@ public class ObjetoAtor {
     private String gender;
     private int movieId;
 
-
     public ObjetoAtor(int id, String nome, String gender, int movieId)
     {
 

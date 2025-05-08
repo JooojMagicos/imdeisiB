@@ -48,7 +48,7 @@ public class ObjetoFIlmes {
         return Integer.parseInt(anoano[0]);
     }
 
-    public int getNumAA() { return  numAtores+numAtrizes;}
+    public int getNumAA() { return  numAtores;}
 
     public void setNumAtores(String gen) {
         if (gen.equals("F"))
