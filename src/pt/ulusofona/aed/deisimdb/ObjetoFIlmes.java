@@ -10,6 +10,7 @@ public class ObjetoFIlmes {
     private final String nome;
     private final String ano;
     private int numAtores;
+    private final ArrayList<ObjetoAtor> atoresObj = new ArrayList<>();
     private int numAtrizes;
     private int numRealizadores;
     private final ArrayList<String> realizadores = new ArrayList<>();
@@ -37,18 +38,20 @@ public class ObjetoFIlmes {
 
     public String getNome() { return nome; }
 
+    public int getQntAtor() { return numAtores+numAtrizes; }
+
     public String getMesAno() {
         String[] mesAno = ano.split("-");
         return mesAno[1]+mesAno[0];
     }
+
+    public ArrayList<ObjetoAtor> getAtoresObj() { return atoresObj; }
 
     public int getAno()
     {
         String[] anoano = ano.split("-");
         return Integer.parseInt(anoano[0]);
     }
-
-    public int getNumAA() { return  numAtores+numAtrizes;}
 
     public void setNumAtores(String gen) {
         if (gen.equals("F"))
@@ -68,6 +71,8 @@ public class ObjetoFIlmes {
     public void setRealizadores(String realizadores){ this.realizadores.add(realizadores); Collections.sort(this.realizadores);}
 
     public void setGeneros(String generos){ this.generosNomes.add(generos); Collections.sort(this.generosNomes);}
+
+    public void setAtoresObj(ObjetoAtor atorobj ){ this.atoresObj.add(atorobj); }
 
     // funçoes de set e get ---------
 
