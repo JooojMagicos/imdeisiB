@@ -1,8 +1,253 @@
 package pt.ulusofona.aed.deisimdb;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class Commands {
 
+    public Commands()
+    {
 
+    }
+
+
+    public Result CountMoviesMonthYear(ArrayList<String> entradas, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM)
+    {
+        if (entradas.get(0).length() == 1){ entradas.set(0,"0"+entradas.get(0)); }
+
+        final Integer[] qntdFilmes = {0}; // nao sei porque isso funciona, mas funciona. Tambem deve ocupar mais memoria
+
+        objetoFilmesHM.forEach((key,value) -> // isso parece lento, talvez precise fazer algo diferente
+        {
+            if (value.getMesAno().equals(entradas.get(0)+entradas.get(1)))
+            {
+                qntdFilmes[0]++;
+
+            }
+        });
+
+        return new Result(true,"", qntdFilmes[0].toString());
+    }
+
+
+
+    public Result CountMoviesDirector(ArrayList<String> entradas, HashMap<String, Integer> objetoRealizadoresHM)
+    {
+        String nomeCompleto = "";
+
+        for (int i = 0; i < entradas.size(); i++)
+        {
+            nomeCompleto += entradas.get(i);
+
+            if (i!=entradas.size()-1)
+            {
+                nomeCompleto += " ";
+            }
+
+        }
+        System.out.println(nomeCompleto);
+
+        if (objetoRealizadoresHM.containsKey(nomeCompleto))
+        {
+            return new Result(true,"",objetoRealizadoresHM.get(nomeCompleto).toString());
+        }
+        else { return new Result(false,"objeto Nao contém nome "+nomeCompleto,"0"); }
+    }
+
+
+
+
+    public Result countActorsIn2Years(ArrayList<String> entradas, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM)
+    {
+        var ref = new Object() {
+            int jose = 0;
+        };
+
+        objetoAtoresHM.forEach((key,value) ->
+        {
+            for (ObjetoAtor atorFilmes : value)
+            {
+                if      (objetoFilmesHM.get(atorFilmes.getMovieId()).getAno() == Integer.parseInt(entradas.get(0)) ||
+                        objetoFilmesHM.get(atorFilmes.getMovieId()).getAno() == Integer.parseInt(entradas.get(1)))
+                {
+                    ref.jose++;
+                    break;
+                }
+            }
+        });
+
+        return new Result(true,"", Integer.toString(ref.jose));
+    }
+    
+
+
+    
+    public Result countMoviesBetweenYearsWithNActors(ArrayList<String> entradas, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM)
+    {
+        var ref = new Object() {
+            int qntFilmes = 0;
+        };
+
+        objetoFilmesHM.forEach((key,value) -> // isso parece lento, talvez precise fazer algo diferente
+        {
+            if (value.getAno() < Integer.parseInt(entradas.get(1))
+                    && value.getAno() > Integer.parseInt(entradas.get(0))
+                    && value.getQntAtor() > Integer.parseInt(entradas.get(2))
+                    && value.getQntAtor() < Integer.parseInt(entradas.get(3)))
+            {
+                ref.qntFilmes += 1;
+            }
+        });
+
+        return new Result(true,"", Integer.toString(ref.qntFilmes));
+    }
+
+
+
+
+    public Result getMoviesActorYear(ArrayList<String> entradas, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM,HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM)
+    {
+        ArrayList<String> filmesDoAtor = new ArrayList<>();
+        String stringSaida = "";
+        String nomeCompleto = "";
+        for (int i = 1; i<entradas.size(); i++)
+        {
+            nomeCompleto += entradas.get(i);
+
+            if (entradas.size()-1 != i)
+            {
+                nomeCompleto += " ";
+            }
+        }
+
+        if (objetoAtoresHM.containsKey(nomeCompleto))
+        {
+            for (ObjetoAtor atores : objetoAtoresHM.get(nomeCompleto))
+            {
+                if (objetoFilmesHM.get(atores.getMovieId()).getAno() == Integer.parseInt(entradas.get(0)))
+                {
+                    filmesDoAtor.add(objetoFilmesHM.get(atores.getMovieId()).getNome());
+                }
+            }
+        }
+        for (int i = 0; i < filmesDoAtor.size(); i++)
+        {
+            stringSaida += filmesDoAtor.get(i);
+            if (filmesDoAtor.size()-1 != i)
+            {
+                stringSaida += "\n";
+            }
+        }
+        if (filmesDoAtor.isEmpty())
+        {
+            return new Result(false,"nenhum filme","No Results");
+        }
+        return new Result(true,"",stringSaida);
+    }
+
+
+    public Result getMoviesWithActorContaining(ArrayList<String> entradas, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM,HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM)
+    {
+        var ref = new Object() {
+            boolean errado = false;
+        };
+        ArrayList<String> results = new ArrayList<>();
+        String nomeCompleto = "";
+
+
+        for (String entradas0 : entradas)
+        {
+            nomeCompleto += entradas0;
+            if (!nomeCompleto.isEmpty()) { nomeCompleto += " "; }
+        }
+
+        String finalNomeCompleto = nomeCompleto;
+        System.out.println(nomeCompleto+"  "+ finalNomeCompleto);
+
+        objetoAtoresHM.forEach((key, value) ->
+        {
+
+            for (ObjetoAtor atores : value)
+            {
+
+                for (int i = 0; i< finalNomeCompleto.length()-1; i++)
+                {
+                    if (atores.getNome().charAt(i) != finalNomeCompleto.charAt(i)) // aparentemente essa funcao nao é pra ser case sensitive - att: nao era kkkkk
+                    {
+                        ref.errado = false;
+                        break;
+                    }
+                }
+
+                if (ref.errado) { continue; }
+                results.add(objetoFilmesHM.get(atores.getMovieId()).getNome());
+
+            }
+        }); // estou com muito nojo desse código, peço desculpas aos meus professores que estiverem lendo isso
+
+        Collections.sort(results);
+
+        if (results.isEmpty())
+        {
+            return new Result(true,"","No results");
+        }
+        return new Result(true,"",results.toString());
+    }
+
+
+
+    public Result getTop4YearsWithMoviesContaining(ArrayList<String> entradas, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM)
+    {
+        HashMap<Integer,Integer> qntFilmesPorAno = new HashMap<>();
+        var ref = new Object() {
+            String stringSaida = "";
+            int i = 0;
+        };
+
+        for (ObjetoFIlmes filmes : objetoFilmesHM.values())
+        {
+            if (qntFilmesPorAno.size() == 4) { break; }
+
+            if (qntFilmesPorAno.containsKey(filmes.getAno()))
+            {
+                qntFilmesPorAno.put(filmes.getAno(),qntFilmesPorAno.get(filmes.getAno())+1);
+            }
+            else
+            {
+                qntFilmesPorAno.put(filmes.getAno(),1);
+            }
+        }
+        qntFilmesPorAno.forEach((key,value) ->
+        {
+
+            ref.stringSaida += key + ":" + value+"\n";
+
+        });
+
+        return new Result(true,"",ref.stringSaida);
+    }
+
+    public void help()
+    {
+        System.out.println("COUNT_MOVIES_MONTH_YEAR <month> <year>\n" +
+                "COUNT_MOVIES_DIRECTOR <full-name>\n" +
+                "COUNT_ACTORS_IN_2_YEARS <year-1> <year-2>\n" +
+                "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS <year-start> <year-end> <min> <max>\n" +
+                "GET_MOVIES_ACTOR_YEAR <year> <full-name>\n" +
+                "GET_MOVIES_WITH_ACTOR_CONTAINING <name>\n" +
+                "GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING <search-string>\n" +
+                "GET_ACTORS_BY_DIRECTOR <num> <full-name>\n" +
+                "TOP_MONTH_MOVIE_COUNT <year>\n" +
+                "TOP_VOTED_ACTORS <num> <year>\n" +
+                "TOP_MOVIES_WITH_MORE_GENDER <num> <year> <gender>\n" +
+                "TOP_MOVIES_WITH_GENDER_BIAS <num> <year>\n" +
+                "TOP_6_DIRECTORS_WITHIN_FAMILY <year-start> <year-end>\n" +
+                "INSERT_ACTOR <id>;<name>;<gender>;<movie-id>\n" +
+                "INSERT_DIRECTOR <id>;<name>;<movie-id>\n" +
+                "DISTANCE_BETWEEN_ACTORS <actor-1>,<actor-2>\n" +
+                "HELP\n" +
+                "QUIT");
+    }
 }

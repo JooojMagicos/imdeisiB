@@ -22,7 +22,7 @@ public class Main
     // HASHMAP ARRAYLIST ATORES
     static ArrayList<ObjetoAtor> objetoAtores= new ArrayList<>();
     static HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM = new HashMap<>();
-    static HashMap<Integer, ArrayList<ObjetoAtor>> objetoAtoresFilmesHM = new HashMap<>();
+
 
     static ArrayList<ObjetoGeneroFilmes> objetoGeneroFilmes = new ArrayList<>();
     static ArrayList<ObjetoLinhaIncorreta> objetoLinhasIncorretas = new ArrayList<>();
@@ -128,22 +128,16 @@ public class Main
                                         continue;
                                     }
 
-                                    boolean existe = false;
 
 
 
-                                    if (objetoFilmesHM.containsKey(id)) {
 
-                                        linhasLidas++;
-                                        existe = true;
-
-                                    }
-
-
-
-                                    if (!existe)
+                                    if (objetoFilmesHM.containsKey(id))
                                     {
-
+                                        linhasLidas++;
+                                    }
+                                    else
+                                    {
                                         linhasLidas++;
                                         ObjetoFIlmes filme = new ObjetoFIlmes(id, nome, data,0);
                                         objetoFilmesHM.put(id,filme);
@@ -522,197 +516,41 @@ public class Main
 
             case "HELP" ->
             {
-                System.out.println("COUNT_MOVIES_MONTH_YEAR <month> <year>\n" +
-                        "COUNT_MOVIES_DIRECTOR <full-name>\n" +
-                        "COUNT_ACTORS_IN_2_YEARS <year-1> <year-2>\n" +
-                        "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS <year-start> <year-end> <min> <max>\n" +
-                        "GET_MOVIES_ACTOR_YEAR <year> <full-name>\n" +
-                        "GET_MOVIES_WITH_ACTOR_CONTAINING <name>\n" +
-                        "GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING <search-string>\n" +
-                        "GET_ACTORS_BY_DIRECTOR <num> <full-name>\n" +
-                        "TOP_MONTH_MOVIE_COUNT <year>\n" +
-                        "TOP_VOTED_ACTORS <num> <year>\n" +
-                        "TOP_MOVIES_WITH_MORE_GENDER <num> <year> <gender>\n" +
-                        "TOP_MOVIES_WITH_GENDER_BIAS <num> <year>\n" +
-                        "TOP_6_DIRECTORS_WITHIN_FAMILY <year-start> <year-end>\n" +
-                        "INSERT_ACTOR <id>;<name>;<gender>;<movie-id>\n" +
-                        "INSERT_DIRECTOR <id>;<name>;<movie-id>\n" +
-                        "DISTANCE_BETWEEN_ACTORS <actor-1>,<actor-2>\n" +
-                        "HELP\n" +
-                        "QUIT");
+                new Commands().help();
             }
 
             case "COUNT_MOVIES_MONTH_YEAR" -> // passou os testes
             {
-
-                if (entradas.get(0).length() == 1){ entradas.set(0,"0"+entradas.get(0)); }
-
-                final Integer[] qntdFilmes = {0}; // nao sei porque isso funciona, mas funciona. Tambem deve ocupar mais memoria
-
-                objetoFilmesHM.forEach((key,value) -> // isso parece lento, talvez precise fazer algo diferente
-                {
-                    if (value.getMesAno().equals(entradas.get(0)+entradas.get(1)))
-                    {
-                        qntdFilmes[0]++;
-                    }
-                });
-
-                return new Result(true,"", qntdFilmes[0].toString());
+                return new Commands().CountMoviesMonthYear(entradas,objetoFilmesHM);
             }
 
             case "COUNT_MOVIES_DIRECTOR" ->
             {
-                String nomeCompleto = "";
-
-                for (int i = 0; i < entradas.size(); i++)
-                {
-                    nomeCompleto += entradas.get(i);
-
-                    if (i!=entradas.size()-1)
-                    {
-                        nomeCompleto += " ";
-                    }
-
-                }
-                System.out.println(nomeCompleto);
-
-                if (objetoRealizadoresHM.containsKey(nomeCompleto))
-                {
-                    return new Result(true,"",objetoRealizadoresHM.get(nomeCompleto).toString());
-                }
-                else { return new Result(false,"objeto Nao contém nome "+nomeCompleto,"0"); }
+                return new Commands().CountMoviesDirector(entradas,objetoRealizadoresHM);
             }
 
             case "COUNT_ACTORS_IN_2_YEARS" ->
             {
-                var ref = new Object() {
-                    int jose = 0;
-                };
-
-                objetoAtoresHM.forEach((key,value) ->
-                {
-                    for (ObjetoAtor atorFilmes : value)
-                    {
-                        if      (objetoFilmesHM.get(atorFilmes.getMovieId()).getAno() == Integer.parseInt(entradas.get(0)) ||
-                                objetoFilmesHM.get(atorFilmes.getMovieId()).getAno() == Integer.parseInt(entradas.get(1)))
-                        {
-                            ref.jose++;
-                            break;
-                        }
-                    }
-                });
-
-                return new Result(true,"", Integer.toString(ref.jose));
+                return new Commands().countActorsIn2Years(entradas,objetoAtoresHM,objetoFilmesHM);
             }
             case "GET_MOVIES_ACTOR_YEAR" ->
             {
-                ArrayList<String> filmesDoAtor = new ArrayList<>();
-                String stringSaida = "";
-                String nomeCompleto = "";
-                for (int i = 1; i<entradas.size(); i++)
-                {
-                    nomeCompleto += entradas.get(i);
-
-                    if (entradas.size()-1 != i)
-                    {
-                        nomeCompleto += " ";
-                    }
-                }
-
-                if (objetoAtoresHM.containsKey(nomeCompleto))
-                {
-                    for (ObjetoAtor atores : objetoAtoresHM.get(nomeCompleto))
-                    {
-                        if (objetoFilmesHM.get(atores.getMovieId()).getAno() == Integer.parseInt(entradas.get(0)))
-                        {
-                            filmesDoAtor.add(objetoFilmesHM.get(atores.getMovieId()).getNome());
-                        }
-                    }
-                }
-                for (int i = 0; i < filmesDoAtor.size(); i++)
-                {
-                    stringSaida += filmesDoAtor.get(i);
-                    if (filmesDoAtor.size()-1 != i)
-                    {
-                        stringSaida += "\n";
-                    }
-                }
-                if (filmesDoAtor.isEmpty())
-                {
-                    return new Result(false,"nenhum filme","No Results");
-                }
-                return new Result(true,"",stringSaida);
+                return new Commands().getMoviesActorYear(entradas,objetoFilmesHM,objetoAtoresHM);
 
             }
             case "GET_MOVIES_WITH_ACTOR_CONTAINING" ->
             {
-
-                var ref = new Object() {
-                    boolean errado = false;
-                };
-                ArrayList<String> results = new ArrayList<>();
-                String nomeCompleto = "";
-
-
-                for (String entradas0 : entradas)
-                {
-                    nomeCompleto += entradas0;
-                    if (!nomeCompleto.isEmpty()) { nomeCompleto += " "; }
-                }
-
-                String finalNomeCompleto = nomeCompleto;
-                System.out.println(nomeCompleto+"  "+ finalNomeCompleto);
-
-                objetoAtoresHM.forEach((key, value) ->
-                {
-
-                    for (ObjetoAtor atores : value)
-                    {
-
-                        for (int i = 0; i< finalNomeCompleto.length()-1; i++)
-                        {
-                            if (atores.getNome().toLowerCase().charAt(i) != finalNomeCompleto.toLowerCase().charAt(i)) // aparentemente essa funcao nao é pra ser case sensitive
-                            {
-                                ref.errado = false;
-                                break;
-                            }
-                        }
-
-                        if (ref.errado) { continue; }
-                        results.add(objetoFilmesHM.get(atores.getMovieId()).getNome());
-
-                    }
-                }); // estou com muito nojo desse código, peço desculpas aos meus professores que estiverem lendo isso
-
-                Collections.sort(results);
-
-                if (results.isEmpty())
-                {
-                    return new Result(true,"","No results");
-                }
-                return new Result(true,"",results.toString());
+                return new Commands().getMoviesWithActorContaining(entradas,objetoFilmesHM,objetoAtoresHM);
             }
             case "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS" ->
             {
-                var ref = new Object() {
-                    int qntFilmes = 0;
-                };
-
-                objetoFilmesHM.forEach((key,value) -> // isso parece lento, talvez precise fazer algo diferente
-                {
-                    if (value.getAno() < Integer.parseInt(entradas.get(1))
-                            && value.getAno() > Integer.parseInt(entradas.get(0))
-                            && value.getQntAtor() > Integer.parseInt(entradas.get(2))
-                            && value.getQntAtor() < Integer.parseInt(entradas.get(3)))
-                    {
-                        ref.qntFilmes += 1;
-                    }
-                });
-
-
-
-                return new Result(true,"", Integer.toString(ref.qntFilmes));
+                return new Commands().countMoviesBetweenYearsWithNActors(entradas,objetoFilmesHM);
             }
+            case "GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING" ->
+            {
+                return new Commands().getTop4YearsWithMoviesContaining(entradas,objetoFilmesHM);
+            }
+
         }
 
         return new Result(false,"","");
@@ -744,11 +582,11 @@ public class Main
        }
 
 
-//      for (Object printafilmes : filmes1)
-//      {
-//          System.out.println(printafilmes.toString());
-//
-//      }
+      for (Object printafilmes : filmes1)
+      {
+          System.out.println(printafilmes.toString());
+
+      }
 
 
       HashMap<String,String> hmcoisa = new HashMap<>();
@@ -756,8 +594,8 @@ public class Main
       hmcoisa.put("c","b");
 
       start = System.currentTimeMillis();
-      System.out.println(execute("COUNT_ACTORS_IN_2_YEARS 2008 2013").result + " <- RESULTADO DA CHAMADA");
-      System.out.println(execute("GET_MOVIES_WITH_ACTOR_CONTAINING Amy Barnes").result);
+      System.out.println(execute("GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING do").result + " <- RESULTADO DA CHAMADA");
+      System.out.println(execute("GET_MOVIES_WITH_ACTOR_CONTAINING bar").result);
       end = System.currentTimeMillis();
 
       System.out.println("demorou "+ (end-start) +" ms");
