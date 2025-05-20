@@ -16,9 +16,12 @@ public class Main
     // HASHMAP ARRAYLIST GENEROS
     static HashMap<Integer,String> objetoGenerosHM = new HashMap<>();
     static ArrayList<ObjetoGeneros> objetoGeneros = new ArrayList<>();
+
     // HASHMAP ARRAYLIST REALIZADORES
     static ArrayList<ObjetoRealizador> objetoRealizadores = new ArrayList<>();
     static HashMap<String,Integer> objetoRealizadoresHM = new HashMap<>();
+    static HashSet<Integer> objetoRealizadoresHM2 = new HashSet<>(); // esse hashset só serve pra ver se um realizador ja foi inserido na lista de realizadores.
+
     // HASHMAP ARRAYLIST ATORES
     static ArrayList<ObjetoAtor> objetoAtores= new ArrayList<>();
     static HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM = new HashMap<>();
@@ -44,6 +47,7 @@ public class Main
 
         objetoRealizadoresHM = new HashMap<>();
         objetoRealizadores = new ArrayList<>();
+        objetoRealizadoresHM2 = new HashSet<>();
 
         objetoGenerosHM = new HashMap<>();
         objetoGeneros = new ArrayList<>();
@@ -252,6 +256,7 @@ public class Main
                                     if (!objetoRealizadoresHM.containsKey(nome))
                                     {
                                         objetoRealizadoresHM.put(nome,1);
+                                        objetoRealizadoresHM2.add(id);
                                     }
                                     else
                                     {
@@ -549,6 +554,28 @@ public class Main
             case "GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING" ->
             {
                 return new Commands().getTop4YearsWithMoviesContaining(entradas,objetoFilmesHM);
+            }
+            case "INSERT_DIRECTOR" -> // muita coisa pra editar, precisa ser feito no main
+            {
+                if (!objetoRealizadoresHM2.contains(Integer.parseInt(entradas.get(0))))
+                {
+                    objetoRealizadores.add(new ObjetoRealizador(Integer.parseInt(entradas.get(0)),entradas.get(1),Integer.parseInt(entradas.get(2))));
+                    objetoRealizadoresHM.put(entradas.get(1),1);
+                    objetoRealizadoresHM2.add(Integer.parseInt(entradas.get(0)));
+
+                    ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradas.get(2)));
+                    int indexFilme = objetoFilmes.indexOf(filme);
+                    filme.setNumRealizadores(1);
+                    filme.setRealizadores(entradas.get(1));
+                    objetoFilmesHM.replace(Integer.parseInt(entradas.get(2)),filme);
+                    objetoFilmes.set(indexFilme,filme);
+
+                    return new Result(true,"","OK");
+                }
+                else
+                {
+                    return new Result(false,"ID DUPLICADO","Erro");
+                }
             }
 
         }

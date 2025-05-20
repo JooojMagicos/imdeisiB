@@ -4,6 +4,7 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Commands {
 
@@ -229,22 +230,23 @@ public class Commands {
         return new Result(true,"",ref.stringSaida);
     }
 
+
     public void help()
     {
-        System.out.println("COUNT_MOVIES_MONTH_YEAR <month> <year>\n" +
-                "COUNT_MOVIES_DIRECTOR <full-name>\n" +
-                "COUNT_ACTORS_IN_2_YEARS <year-1> <year-2>\n" +
-                "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS <year-start> <year-end> <min> <max>\n" +
-                "GET_MOVIES_ACTOR_YEAR <year> <full-name>\n" +
-                "GET_MOVIES_WITH_ACTOR_CONTAINING <name>\n" +
-                "GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING <search-string>\n" +
-                "GET_ACTORS_BY_DIRECTOR <num> <full-name>\n" +
-                "TOP_MONTH_MOVIE_COUNT <year>\n" +
-                "TOP_VOTED_ACTORS <num> <year>\n" +
+        System.out.println("COUNT_MOVIES_MONTH_YEAR <month> <year>\n" + // feitp
+                "COUNT_MOVIES_DIRECTOR <full-name>\n" + // faisca
+                "COUNT_ACTORS_IN_2_YEARS <year-1> <year-2>\n" + // feito
+                "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS <year-start> <year-end> <min> <max>\n" + // feito
+                "GET_MOVIES_ACTOR_YEAR <year> <full-name>\n" + // feito
+                "GET_MOVIES_WITH_ACTOR_CONTAINING <name>\n" + // feito
+                "GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING <search-string>\n" + // feito
+                "GET_ACTORS_BY_DIRECTOR <num> <full-name>\n" + // faisca
+                "TOP_MONTH_MOVIE_COUNT <year>\n" + // faisca
+                "TOP_VOTED_ACTORS <num> <year>\n" + // faisca
                 "TOP_MOVIES_WITH_MORE_GENDER <num> <year> <gender>\n" +
                 "TOP_MOVIES_WITH_GENDER_BIAS <num> <year>\n" +
                 "TOP_6_DIRECTORS_WITHIN_FAMILY <year-start> <year-end>\n" +
-                "INSERT_ACTOR <id>;<name>;<gender>;<movie-id>\n" +
+                "INSERT_ACTOR <id>;<name>;<gender>;<movie-id>\n" + // faisca
                 "INSERT_DIRECTOR <id>;<name>;<movie-id>\n" +
                 "DISTANCE_BETWEEN_ACTORS <actor-1>,<actor-2>\n" +
                 "HELP\n" +
