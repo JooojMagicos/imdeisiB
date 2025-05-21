@@ -634,11 +634,11 @@ public class Main
        }
 
 
-      for (Object printafilmes : filmes1)
-      {
-          System.out.println(printafilmes.toString());
-
-      }
+//      for (Object printafilmes : filmes1)
+//      {
+//          System.out.println(printafilmes.toString());
+//
+//      }
 
 
       HashMap<String,String> hmcoisa = new HashMap<>();
@@ -647,12 +647,15 @@ public class Main
 
       start = System.currentTimeMillis();
       System.out.println(execute("COUNT_ACTORS_IN_2_YEARS 2008 2013").result + " <- RESULTADO DA CHAMADA");
-      System.out.println(execute("TOP_MOVIES_WITH_MORE_GENDER 5 2013 F").result);
+
       filmes1 = objetoFilmes;
-      for (Object printafilmes : filmes1)
-      {
-          System.out.println(printafilmes.toString());
-      }
+
+//      for (Object printafilmes : filmes1)
+//      {
+//          System.out.println(printafilmes.toString());
+//      }
+
+
       end = System.currentTimeMillis();
 
       System.out.println("demorou "+ (end-start) +" ms");

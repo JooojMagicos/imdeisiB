@@ -63,23 +63,28 @@ public class Commands {
     public Result countActorsIn2Years(ArrayList<String> entradas, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM)
     {
         int count = 0;
-
+        long start = System.currentTimeMillis();
         for (ArrayList<ObjetoAtor> atores : objetoAtoresHM.values())
         {
             for (ObjetoAtor atorFilmes : atores)
             {
-                if      (objetoFilmesHM.get(atorFilmes.getMovieId()).getAno() == Integer.parseInt(entradas.get(0)))
+                if (objetoFilmesHM.get(atorFilmes.getMovieId()).getAno() == Integer.parseInt(entradas.get(0)))
                 {
                     for (ObjetoAtor atorFilmes2 : atores)
                     {
                         if (objetoFilmesHM.get(atorFilmes2.getMovieId()).getAno() == Integer.parseInt(entradas.get(1)))
                         {
                             count++;
+                            break;
                         }
                     }
+
+                    break;
                 }
             }
         }
+        long end = System.currentTimeMillis();
+        System.out.println("Tempo de execucao: " + (end - start) + " ms");
 
         return new Result(true,"", Integer.toString(count));
     }
