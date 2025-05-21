@@ -557,17 +557,18 @@ public class Main
             }
             case "INSERT_DIRECTOR" -> // muita coisa pra editar, precisa ser feito no main
             {
-                if (!objetoRealizadoresHM2.contains(Integer.parseInt(entradas.get(0))))
+                String[] entradasSplitted = entradas.get(0).split(";");
+                if (!objetoRealizadoresHM2.contains(Integer.parseInt(entradasSplitted[0])))
                 {
-                    objetoRealizadores.add(new ObjetoRealizador(Integer.parseInt(entradas.get(0)),entradas.get(1),Integer.parseInt(entradas.get(2))));
-                    objetoRealizadoresHM.put(entradas.get(1),1);
-                    objetoRealizadoresHM2.add(Integer.parseInt(entradas.get(0)));
+                    objetoRealizadores.add(new ObjetoRealizador(Integer.parseInt(entradasSplitted[0]),entradasSplitted[1],Integer.parseInt(entradasSplitted[2])));
+                    objetoRealizadoresHM.put(entradasSplitted[1],1);
+                    objetoRealizadoresHM2.add(Integer.parseInt(entradasSplitted[0]));
 
-                    ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradas.get(2)));
+                    ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[2]));
                     int indexFilme = objetoFilmes.indexOf(filme);
                     filme.setNumRealizadores(1);
-                    filme.setRealizadores(entradas.get(1));
-                    objetoFilmesHM.replace(Integer.parseInt(entradas.get(2)),filme);
+                    filme.setRealizadores(entradasSplitted[1]);
+                    objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[2]),filme);
                     objetoFilmes.set(indexFilme,filme);
 
                     return new Result(true,"","OK");
@@ -621,8 +622,13 @@ public class Main
       hmcoisa.put("c","b");
 
       start = System.currentTimeMillis();
-      System.out.println(execute("GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING do").result + " <- RESULTADO DA CHAMADA");
+      System.out.println(execute("INSERT_DIRECTOR 440284;ze;1346").result + " <- RESULTADO DA CHAMADA");
       System.out.println(execute("GET_MOVIES_WITH_ACTOR_CONTAINING bar").result);
+      filmes1 = objetoFilmes;
+      for (Object printafilmes : filmes1)
+      {
+          System.out.println(printafilmes.toString());
+      }
       end = System.currentTimeMillis();
 
       System.out.println("demorou "+ (end-start) +" ms");
