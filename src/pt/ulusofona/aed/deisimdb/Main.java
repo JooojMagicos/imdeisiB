@@ -555,6 +555,10 @@ public class Main
             {
                 return new Commands().getTop4YearsWithMoviesContaining(entradas,objetoFilmesHM);
             }
+            case "TOP_MONTH_MOVIE_COUNT" ->
+            {
+                return new Commands().topMonthMovieCount(entradas, objetoFilmesHM);
+            }
             case "INSERT_DIRECTOR" -> // muita coisa pra editar, precisa ser feito no main
             {
                 String[] entradasSplitted = entradas.get(0).split(";");
