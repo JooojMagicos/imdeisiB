@@ -68,11 +68,15 @@ public class Commands {
         {
             for (ObjetoAtor atorFilmes : atores)
             {
-                if      (objetoFilmesHM.get(atorFilmes.getMovieId()).getAno() == Integer.parseInt(entradas.get(0)) &&
-                        objetoFilmesHM.get(atorFilmes.getMovieId()).getAno() == Integer.parseInt(entradas.get(1)))
+                if      (objetoFilmesHM.get(atorFilmes.getMovieId()).getAno() == Integer.parseInt(entradas.get(0)))
                 {
-                    count++;
-                    break;
+                    for (ObjetoAtor atorFilmes2 : atores)
+                    {
+                        if (objetoFilmesHM.get(atorFilmes2.getMovieId()).getAno() == Integer.parseInt(entradas.get(1)))
+                        {
+                            count++;
+                        }
+                    }
                 }
             }
         }
