@@ -638,11 +638,11 @@ public class Main
        }
 
 
-      for (Object printafilmes : filmes1)
-      {
-          System.out.println(printafilmes.toString());
-
-      }
+//      for (Object printafilmes : filmes1)
+//      {
+//          System.out.println(printafilmes.toString());
+//
+//      }
 
 
       HashMap<String,String> hmcoisa = new HashMap<>();
@@ -650,12 +650,17 @@ public class Main
       hmcoisa.put("c","b");
 
       start = System.currentTimeMillis();
+
       System.out.println(execute("TOP_MONTH_MOVIE_COUNT 2008").result);
+
       filmes1 = objetoFilmes;
-      for (Object printafilmes : filmes1)
-      {
-          System.out.println(printafilmes.toString());
-      }
+
+//      for (Object printafilmes : filmes1)
+//      {
+//          System.out.println(printafilmes.toString());
+//      }
+
+
       end = System.currentTimeMillis();
 
       System.out.println("demorou "+ (end-start) +" ms");
