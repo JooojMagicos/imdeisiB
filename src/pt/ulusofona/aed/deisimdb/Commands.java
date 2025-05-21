@@ -221,7 +221,7 @@ public class Commands {
         {
             if (qntFilmesPorAno.size() == 4) { break; }
 
-            for (int i = 0; i<entradas.get(1).length()-1 ; i++)
+            for (int i = 0; i<entradas.get(0).length()-1 ; i++)
             {
                 if (!(entradas.get(1).charAt(i) == filmes.getNome().charAt(i)))
                 {
@@ -254,7 +254,7 @@ public class Commands {
     {
         System.out.println("COUNT_MOVIES_MONTH_YEAR <month> <year>\n" + // feitp
                 "COUNT_MOVIES_DIRECTOR <full-name>\n" + // faisca
-                "COUNT_ACTORS_IN_2_YEARS <year-1> <year-2>\n" + // feito
+                "COUNT_ACTORS_IN_2_YEARS <year-1> <year-2>\n" + // feito - corrigido
                 "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS <year-start> <year-end> <min> <max>\n" + // feito
                 "GET_MOVIES_ACTOR_YEAR <year> <full-name>\n" + // feito
                 "GET_MOVIES_WITH_ACTOR_CONTAINING <name>\n" + // feito
@@ -262,12 +262,12 @@ public class Commands {
                 "GET_ACTORS_BY_DIRECTOR <num> <full-name>\n" + // faisca
                 "TOP_MONTH_MOVIE_COUNT <year>\n" + // faisca
                 "TOP_VOTED_ACTORS <num> <year>\n" + // faisca
-                "TOP_MOVIES_WITH_MORE_GENDER <num> <year> <gender>\n" +
-                "TOP_MOVIES_WITH_GENDER_BIAS <num> <year>\n" +
-                "TOP_6_DIRECTORS_WITHIN_FAMILY <year-start> <year-end>\n" +
+                "TOP_MOVIES_WITH_MORE_GENDER <num> <year> <gender>\n" + // jose
+                "TOP_MOVIES_WITH_GENDER_BIAS <num> <year>\n" + // jose
+                "TOP_6_DIRECTORS_WITHIN_FAMILY <year-start> <year-end>\n" + // jose
                 "INSERT_ACTOR <id>;<name>;<gender>;<movie-id>\n" + // faisca
                 "INSERT_DIRECTOR <id>;<name>;<movie-id>\n" + // feito
-                "DISTANCE_BETWEEN_ACTORS <actor-1>,<actor-2>\n" +
+                "DISTANCE_BETWEEN_ACTORS <actor-1>,<actor-2>\n" + // jose
                 "HELP\n" +
                 "QUIT");
     }

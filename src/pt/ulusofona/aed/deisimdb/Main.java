@@ -646,7 +646,7 @@ public class Main
       hmcoisa.put("c","b");
 
       start = System.currentTimeMillis();
-      System.out.println(execute("COUNT_ACTORS_IN_2_YEARS 2008 2013").result + " <- RESULTADO DA CHAMADA");
+      System.out.println(execute("GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING A").result + " <- RESULTADO DA CHAMADA");
 
       filmes1 = objetoFilmes;
 
