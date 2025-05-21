@@ -40,10 +40,6 @@ public class ObjetoFIlmes {
 
     public int getQntAtor() { return numAtores+numAtrizes; }
 
-    public String getMesAno() {
-        String[] mesAno = ano.split("-");
-        return mesAno[1]+mesAno[0];
-    }
 
     public int getAtoresGenero(String genero)
     {
@@ -53,6 +49,16 @@ public class ObjetoFIlmes {
     }
 
     public ArrayList<ObjetoAtor> getAtoresObj() { return atoresObj; }
+
+    public String getMes() {
+        String[] mes = ano.split("-");
+        return mes[1];
+    }
+
+    public String getMesAno() {
+        String[] mesAno = ano.split("-");
+        return mesAno[1]+mesAno[0];
+    }
 
     public int getAno()
     {

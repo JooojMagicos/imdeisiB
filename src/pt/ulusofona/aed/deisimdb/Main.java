@@ -555,6 +555,10 @@ public class Main
             {
                 return new Commands().getTop4YearsWithMoviesContaining(entradas,objetoFilmesHM);
             }
+            case "TOP_MONTH_MOVIE_COUNT" ->
+            {
+                return new Commands().topMonthMovieCount(entradas, objetoFilmesHM);
+            }
             case "TOP_MOVIES_WITH_MORE_GENDER" ->
             {
                 List<Map.Entry<String, Integer>> list = new ArrayList<>();
@@ -646,8 +650,7 @@ public class Main
       hmcoisa.put("c","b");
 
       start = System.currentTimeMillis();
-      System.out.println(execute("COUNT_ACTORS_IN_2_YEARS 2008 2013").result + " <- RESULTADO DA CHAMADA");
-      System.out.println(execute("TOP_MOVIES_WITH_MORE_GENDER 5 2013 F").result);
+      System.out.println(execute("TOP_MONTH_MOVIE_COUNT 2008").result);
       filmes1 = objetoFilmes;
       for (Object printafilmes : filmes1)
       {
