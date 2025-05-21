@@ -240,6 +240,34 @@ public class Commands {
         return new Result(true,"",ref.stringSaida);
     }
 
+    public Result topMonthMovieCount (ArrayList<String> entradas, HashMap<Integer, ObjetoFIlmes> objetoFilmesHM){
+        HashMap<String, Integer> qntdFilmesPorMes = new HashMap<>();
+
+        String mesComMaisFilmes = "";
+        int maxCount = 0;
+
+
+
+        for(ObjetoFIlmes filme : objetoFilmesHM.values()){
+            if (filme.getAno() == Integer.parseInt(entradas.get(0))) {
+                if (qntdFilmesPorMes.get(filme.getMesAno()) == null){
+                    qntdFilmesPorMes.put(filme.getMesAno(), 1);
+                }else {
+                    qntdFilmesPorMes.put(filme.getMesAno(), qntdFilmesPorMes.get(filme.getMesAno()) + 1);
+                }
+                if (qntdFilmesPorMes.get(filme.getMesAno()) > maxCount) {
+                    maxCount = qntdFilmesPorMes.get(filme.getMesAno());
+                    mesComMaisFilmes = filme.getMes();
+                   if (mesComMaisFilmes.charAt(0) == '0') {
+                       mesComMaisFilmes = mesComMaisFilmes.substring(1);
+                   }
+                }
+            }
+        }
+
+        return new Result(true, "", mesComMaisFilmes + ":" + maxCount);
+    }
+
 
     public void help()
     {
