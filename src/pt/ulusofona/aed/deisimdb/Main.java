@@ -526,12 +526,12 @@ public class Main
 
             case "COUNT_MOVIES_MONTH_YEAR" -> // passou os testes
             {
-                return new Commands().CountMoviesMonthYear(entradas,objetoFilmesHM);
+                return new Commands().countMoviesMonthYear(entradas,objetoFilmesHM);
             }
 
             case "COUNT_MOVIES_DIRECTOR" ->
             {
-                return new Commands().CountMoviesDirector(entradas,objetoRealizadoresHM);
+                return new Commands().countMoviesDirector(entradas,objetoRealizadoresHM);
             }
 
             case "COUNT_ACTORS_IN_2_YEARS" ->
@@ -554,6 +554,30 @@ public class Main
             case "GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING" ->
             {
                 return new Commands().getTop4YearsWithMoviesContaining(entradas,objetoFilmesHM);
+            }
+            case "TOP_MOVIES_WITH_MORE_GENDER" ->
+            {
+                List<Map.Entry<String, Integer>> list = new ArrayList<>();
+                HashMap<String, Integer> anosGeneros = new HashMap<>();
+
+                for (ObjetoFIlmes filmes : objetoFilmes)
+                {
+                    if (!(filmes.getAno() == Integer.parseInt(entradas.get(1))))
+                    {
+                        continue;
+                    }
+                    else { anosGeneros.put(filmes.getNome(), filmes.getAtoresGenero(entradas.get(2))); }
+                }
+                list.addAll(anosGeneros.entrySet());
+                list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
+                String anosGenerosOrdenado = "";
+
+                for (Map.Entry<String, Integer> anosGeneros2 : list)
+                {
+                    anosGenerosOrdenado += anosGeneros2.getKey() + ":" + anosGeneros2.getValue() + "\n";
+                }
+                return new Result(true,"",anosGenerosOrdenado);
             }
             case "INSERT_DIRECTOR" -> // muita coisa pra editar, precisa ser feito no main
             {
@@ -622,8 +646,8 @@ public class Main
       hmcoisa.put("c","b");
 
       start = System.currentTimeMillis();
-      System.out.println(execute("INSERT_DIRECTOR 440284;ze;1346").result + " <- RESULTADO DA CHAMADA");
-      System.out.println(execute("GET_MOVIES_WITH_ACTOR_CONTAINING bar").result);
+      System.out.println(execute("COUNT_ACTORS_IN_2_YEARS 2008 2013").result + " <- RESULTADO DA CHAMADA");
+      System.out.println(execute("TOP_MOVIES_WITH_MORE_GENDER 5 2013 F").result);
       filmes1 = objetoFilmes;
       for (Object printafilmes : filmes1)
       {

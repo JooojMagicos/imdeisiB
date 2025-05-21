@@ -45,6 +45,13 @@ public class ObjetoFIlmes {
         return mesAno[1]+mesAno[0];
     }
 
+    public int getAtoresGenero(String genero)
+    {
+        if(genero.toUpperCase().equals("F")) { return numAtrizes; }
+        if(genero.toUpperCase().equals("M")) { return numAtores; }
+        else { return 0; }
+    }
+
     public ArrayList<ObjetoAtor> getAtoresObj() { return atoresObj; }
 
     public int getAno()
