@@ -14,7 +14,7 @@ public class Commands {
     }
 
 
-    public Result CountMoviesMonthYear(ArrayList<String> entradas, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM)
+    public Result countMoviesMonthYear(ArrayList<String> entradas, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM)
     {
         if (entradas.get(0).length() == 1){ entradas.set(0,"0"+entradas.get(0)); }
 
@@ -34,7 +34,7 @@ public class Commands {
 
 
 
-    public Result CountMoviesDirector(ArrayList<String> entradas, HashMap<String, Integer> objetoRealizadoresHM)
+    public Result countMoviesDirector(ArrayList<String> entradas, HashMap<String, Integer> objetoRealizadoresHM)
     {
         String nomeCompleto = "";
 
@@ -62,24 +62,22 @@ public class Commands {
 
     public Result countActorsIn2Years(ArrayList<String> entradas, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM)
     {
-        var ref = new Object() {
-            int jose = 0;
-        };
+        int count = 0;
 
-        objetoAtoresHM.forEach((key,value) ->
+        for (ArrayList<ObjetoAtor> atores : objetoAtoresHM.values())
         {
-            for (ObjetoAtor atorFilmes : value)
+            for (ObjetoAtor atorFilmes : atores)
             {
-                if      (objetoFilmesHM.get(atorFilmes.getMovieId()).getAno() == Integer.parseInt(entradas.get(0)) ||
+                if      (objetoFilmesHM.get(atorFilmes.getMovieId()).getAno() == Integer.parseInt(entradas.get(0)) &&
                         objetoFilmesHM.get(atorFilmes.getMovieId()).getAno() == Integer.parseInt(entradas.get(1)))
                 {
-                    ref.jose++;
+                    count++;
                     break;
                 }
             }
-        });
+        }
 
-        return new Result(true,"", Integer.toString(ref.jose));
+        return new Result(true,"", Integer.toString(count));
     }
     
 
@@ -133,6 +131,9 @@ public class Commands {
                 }
             }
         }
+
+        else { return new Result(false,"Ator Inexistente","No results"); }
+
         for (int i = 0; i < filmesDoAtor.size(); i++)
         {
             stringSaida += filmesDoAtor.get(i);
@@ -143,7 +144,7 @@ public class Commands {
         }
         if (filmesDoAtor.isEmpty())
         {
-            return new Result(false,"nenhum filme","No Results");
+            return new Result(false,"No results","No results");
         }
         return new Result(true,"",stringSaida);
     }
@@ -192,7 +193,7 @@ public class Commands {
 
         if (results.isEmpty())
         {
-            return new Result(true,"","No results");
+            return new Result(false,"No results","No results");
         }
         return new Result(true,"",results.toString());
     }
@@ -211,8 +212,17 @@ public class Commands {
         {
             if (qntFilmesPorAno.size() == 4) { break; }
 
+            for (int i = 0; i<entradas.get(1).length()-1 ; i++)
+            {
+                if (!(entradas.get(1).charAt(i) == filmes.getNome().charAt(i)))
+                {
+                    break;
+                }
+            }
+
             if (qntFilmesPorAno.containsKey(filmes.getAno()))
             {
+
                 qntFilmesPorAno.put(filmes.getAno(),qntFilmesPorAno.get(filmes.getAno())+1);
             }
             else
@@ -247,7 +257,7 @@ public class Commands {
                 "TOP_MOVIES_WITH_GENDER_BIAS <num> <year>\n" +
                 "TOP_6_DIRECTORS_WITHIN_FAMILY <year-start> <year-end>\n" +
                 "INSERT_ACTOR <id>;<name>;<gender>;<movie-id>\n" + // faisca
-                "INSERT_DIRECTOR <id>;<name>;<movie-id>\n" +
+                "INSERT_DIRECTOR <id>;<name>;<movie-id>\n" + // feito
                 "DISTANCE_BETWEEN_ACTORS <actor-1>,<actor-2>\n" +
                 "HELP\n" +
                 "QUIT");
