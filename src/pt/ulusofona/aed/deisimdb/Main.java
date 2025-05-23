@@ -1,4 +1,5 @@
 package pt.ulusofona.aed.deisimdb;
+import javax.print.DocFlavor;
 import java.io.*;
 import java.util.*;
 
@@ -144,7 +145,7 @@ public class Main
                                     else
                                     {
                                         linhasLidas++;
-                                        ObjetoFIlmes filme = new ObjetoFIlmes(id, nome, data,0);
+                                        ObjetoFIlmes filme = new ObjetoFIlmes(id, nome, data);
                                         objetoFilmesHM.put(id,filme);
                                         objetoFilmes.add(filme);
                                     }
@@ -552,6 +553,10 @@ public class Main
             {
                 return new Commands().getTop4YearsWithMoviesContaining(entradas,objetoFilmesHM);
             }
+            case "GET_ACTORS_BY_DIRECTOR" ->
+            {
+                return new Result(false,"incompleto","No results");
+            }
             case "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS" ->
             {
                 return new Commands().countMoviesBetweenYearsWithNActors(entradas,objetoFilmesHM);
@@ -569,23 +574,24 @@ public class Main
                 ArrayList<String> filmes = new ArrayList<>();
                 ArrayList<String> filmesOrganizados = new ArrayList<>();
                 String filmesOrganizadosString = "";
+                int contador = 0;
 
                 for (ObjetoFIlmes filmes2 : objetoFilmes)
                 {
-                    if (!(filmes2.getAno() == Integer.parseInt(entradas.get(1))))
+                    if (filmes2.getAno() == Integer.parseInt(entradas.get(1)) && contador < Integer.parseInt(entradas.get(0 )))
                     {
-                        continue;
-                    }
-                    else if (filmes2.getAtoresGenero(entradas.get(2)) <= Integer.parseInt(entradas.get(0)))
-                    {
+                        contador++;
                         anosGeneros.put(filmes2.getNome(), filmes2.getAtoresGenero(entradas.get(2)));
+
                     }
+
                 }
 
                 list.addAll(anosGeneros.entrySet());
+
                 list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
 
-                for (int i = list.get(0).getValue(); i>list.get(list.size()-1).getValue();i--)
+                for (int i = list.get(0).getValue(); i>=list.get(list.size()-1).getValue();i--)
                 {
 
                     for (Map.Entry<String, Integer> list1 : list)
@@ -596,13 +602,13 @@ public class Main
                         }
                     }
 
-                    filmes.sort(Comparator.naturalOrder());
+                    filmes.sort(Comparator.comparing(CharSequence::toString, String::compareToIgnoreCase));
                     filmesOrganizados.addAll(filmes);
                     filmes.clear();
 
 
                 }
-                filmesOrganizadosString = filmesOrganizados.toString().replace("[","").replace("]","");
+                filmesOrganizadosString = filmesOrganizados.toString().replace("[","").replace("]","").replace(", ","\n");
                 return new Result(true,"",filmesOrganizadosString);
 
             }
@@ -657,7 +663,7 @@ public class Main
 
       start = System.currentTimeMillis();
 
-      System.out.println(execute("INSERT_ACTOR 1253;Amy Barnes;F;13463").result);
+      System.out.println(execute("TOP_MOVIES_WITH_MORE_GENDER 5 2011 F").result);
 
       filmes1 = objetoFilmes;
 
