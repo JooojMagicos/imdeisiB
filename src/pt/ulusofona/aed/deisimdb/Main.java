@@ -548,13 +548,13 @@ public class Main
             {
                 return new Commands().getMoviesWithActorContaining(entradas,objetoFilmesHM,objetoAtoresHM);
             }
-            case "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS" ->
-            {
-                return new Commands().countMoviesBetweenYearsWithNActors(entradas,objetoFilmesHM);
-            }
             case "GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING" ->
             {
                 return new Commands().getTop4YearsWithMoviesContaining(entradas,objetoFilmesHM);
+            }
+            case "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS" ->
+            {
+                return new Commands().countMoviesBetweenYearsWithNActors(entradas,objetoFilmesHM);
             }
             case "TOP_MONTH_MOVIE_COUNT" ->
             {
@@ -562,7 +562,49 @@ public class Main
             }
             case "TOP_MOVIES_WITH_MORE_GENDER" ->
             {
-                return new Commands().topMoviesWithMoreGender(entradas, objetoFilmes);
+
+
+                List<Map.Entry<String, Integer>> list = new ArrayList<>();
+                HashMap<String, Integer> anosGeneros = new HashMap<>();
+                ArrayList<String> filmes = new ArrayList<>();
+                ArrayList<String> filmesOrganizados = new ArrayList<>();
+                String filmesOrganizadosString = "";
+
+                for (ObjetoFIlmes filmes2 : objetoFilmes)
+                {
+                    if (!(filmes2.getAno() == Integer.parseInt(entradas.get(1))))
+                    {
+                        continue;
+                    }
+                    else if (filmes2.getAtoresGenero(entradas.get(2)) <= Integer.parseInt(entradas.get(0)))
+                    {
+                        anosGeneros.put(filmes2.getNome(), filmes2.getAtoresGenero(entradas.get(2)));
+                    }
+                }
+
+                list.addAll(anosGeneros.entrySet());
+                list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
+                for (int i = list.get(0).getValue(); i>list.get(list.size()-1).getValue();i--)
+                {
+
+                    for (Map.Entry<String, Integer> list1 : list)
+                    {
+                        if (list1.getValue() == i)
+                        {
+                            filmes.add(list1.getKey()+":"+list1.getValue());
+                        }
+                    }
+
+                    filmes.sort(Comparator.naturalOrder());
+                    filmesOrganizados.addAll(filmes);
+                    filmes.clear();
+
+
+                }
+                filmesOrganizadosString = filmesOrganizados.toString().replace("[","").replace("]","");
+                return new Result(true,"",filmesOrganizadosString);
+
             }
             case "INSERT_DIRECTOR" ->
             {
@@ -614,6 +656,7 @@ public class Main
       hmcoisa.put("c","b");
 
       start = System.currentTimeMillis();
+
       System.out.println(execute("INSERT_ACTOR 1253;Amy Barnes;F;13463").result);
 
       filmes1 = objetoFilmes;
@@ -625,6 +668,7 @@ public class Main
 
 
       end = System.currentTimeMillis();
+
 
       System.out.println("demorou "+ (end-start) +" ms");
 
