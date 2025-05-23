@@ -602,11 +602,11 @@ public class Main
        }
 
 
-      for (Object printafilmes : filmes1)
-      {
-          System.out.println(printafilmes.toString());
-
-      }
+//      for (Object printafilmes : filmes1)
+//      {
+//          System.out.println(printafilmes.toString());
+//
+//      }
 
 
       HashMap<String,String> hmcoisa = new HashMap<>();
@@ -615,11 +615,15 @@ public class Main
 
       start = System.currentTimeMillis();
       System.out.println(execute("INSERT_ACTOR 1253;Amy Barnes;F;13463").result);
+
       filmes1 = objetoFilmes;
-      for (Object printafilmes : filmes1)
-      {
-          System.out.println(printafilmes.toString());
-      }
+
+//      for (Object printafilmes : filmes1)
+//      {
+//          System.out.println(printafilmes.toString());
+//      }
+
+
       end = System.currentTimeMillis();
 
       System.out.println("demorou "+ (end-start) +" ms");
