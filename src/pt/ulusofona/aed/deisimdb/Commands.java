@@ -349,7 +349,7 @@ public class Commands {
 
     public void help()
     {
-        System.out.println("COUNT_MOVIES_MONTH_YEAR <month> <year>\n" + // feitp
+        System.out.println("COUNT_MOVIES_MONTH_YEAR <month> <year>\n" + // feito
                 "COUNT_MOVIES_DIRECTOR <full-name>\n" + // faisca
                 "COUNT_ACTORS_IN_2_YEARS <year-1> <year-2>\n" + // feito
                 "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS <year-start> <year-end> <min> <max>\n" + // feito
