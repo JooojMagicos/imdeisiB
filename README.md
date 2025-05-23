@@ -73,3 +73,21 @@ Em loops com milhões de elementos, o for tradicional tende a ser mais eficiente
 Use forEach quando quiser código mais legível e funcional.
 Use for tradicional quando precisar de máxima performance, acesso por índice, ou mais controle sobre o loop.
 Quer que eu te mostre um comparativo de desempenho entre os dois em tempo de execução?
+
+Prompt -
+explique o que é o comparator natural order sem usar codigo
+
+Resposta -
+Claro! Vamos explicar de forma conceitual, sem código:
+
+O Comparator.naturalOrder() é uma ferramenta da linguagem Java usada para ordenar elementos de uma forma "natural", ou seja, seguindo a ordem que seria esperada para o tipo de dado:
+
+Para números, é do menor para o maior (ex: 1, 2, 3, 4...).
+Para palavras (strings), é em ordem alfabética (ex: "abacaxi", "banana", "laranja").
+Para datas, é da mais antiga para a mais recente.
+Essa "ordem natural" funciona porque certos tipos de dados, como números, textos e datas, sabem como se comparar entre si — eles implementam uma lógica interna chamada Comparable. O Comparator.naturalOrder() aproveita essa lógica para ordenar os elementos.
+
+Então, resumindo:
+
+Comparator.naturalOrder() é uma forma de dizer "ordene esses elementos do jeito natural deles", seja alfabética, cronológica ou numérica.
+É útil quando você quer ordenar uma lista, conjunto ou qualquer coleção de dados de forma simples e lógica, sem precisar definir manualmente como comparar os elementos.

@@ -564,20 +564,44 @@ public class Main
 
                 List<Map.Entry<String, Integer>> list = new ArrayList<>();
                 HashMap<String, Integer> anosGeneros = new HashMap<>();
+                ArrayList<String> filmes = new ArrayList<>();
+                ArrayList<String> filmesOrganizados = new ArrayList<>();
+                String filmesOrganizadosString = "";
 
-                for (ObjetoFIlmes filmes : objetoFilmes)
+                for (ObjetoFIlmes filmes2 : objetoFilmes)
                 {
-                    if (!(filmes.getAno() == Integer.parseInt(entradas.get(1))))
+                    if (!(filmes2.getAno() == Integer.parseInt(entradas.get(1))))
                     {
                         continue;
                     }
-                    else { anosGeneros.put(filmes.getNome(), filmes.getAtoresGenero(entradas.get(2))); }
+                    else if (filmes2.getAtoresGenero(entradas.get(2)) <= Integer.parseInt(entradas.get(0)))
+                    {
+                        anosGeneros.put(filmes2.getNome(), filmes2.getAtoresGenero(entradas.get(2)));
+                    }
                 }
 
                 list.addAll(anosGeneros.entrySet());
                 list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
 
-                return new Result(true,"",list.toString());
+                for (int i = list.get(0).getValue(); i>list.get(list.size()-1).getValue();i--)
+                {
+
+                    for (Map.Entry<String, Integer> list1 : list)
+                    {
+                        if (list1.getValue() == i)
+                        {
+                            filmes.add(list1.getKey()+":"+list1.getValue());
+                        }
+                    }
+
+                    filmes.sort(Comparator.naturalOrder());
+                    filmesOrganizados.addAll(filmes);
+                    filmes.clear();
+
+
+                }
+                filmesOrganizadosString = filmesOrganizados.toString().replace("[","").replace("]","");
+                return new Result(true,"",filmesOrganizadosString);
 
             }
             case "INSERT_DIRECTOR" -> // muita coisa pra editar, precisa ser feito no main
@@ -648,7 +672,7 @@ public class Main
 
       start = System.currentTimeMillis();
 
-      System.out.println(execute("TOP_MOVIES_WITH_MORE_GENDER 3 2008 F").result);
+      System.out.println(execute("TOP_MOVIES_WITH_MORE_GENDER 3 2017 F").result);
 
       filmes1 = objetoFilmes;
 
@@ -659,6 +683,7 @@ public class Main
 
 
       end = System.currentTimeMillis();
+
 
       System.out.println("demorou "+ (end-start) +" ms");
 
