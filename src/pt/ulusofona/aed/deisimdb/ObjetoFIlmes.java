@@ -50,10 +50,6 @@ public class ObjetoFIlmes {
 
     public ArrayList<ObjetoAtor> getAtoresObj() { return atoresObj; }
 
-    public String getMes() {
-        String[] mes = ano.split("-");
-        return mes[1];
-    }
 
     public String getMesAno() {
         String[] mesAno = ano.split("-");

@@ -25,6 +25,7 @@ public class Main
     // HASHMAP ARRAYLIST ATORES
     static ArrayList<ObjetoAtor> objetoAtores= new ArrayList<>();
     static HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM = new HashMap<>();
+    static HashSet<Integer> objetoAtoresHS = new HashSet<>();
 
 
     static ArrayList<ObjetoGeneroFilmes> objetoGeneroFilmes = new ArrayList<>();
@@ -562,6 +563,7 @@ public class Main
             case "TOP_MOVIES_WITH_MORE_GENDER" ->
             {
 
+
                 List<Map.Entry<String, Integer>> list = new ArrayList<>();
                 HashMap<String, Integer> anosGeneros = new HashMap<>();
                 ArrayList<String> filmes = new ArrayList<>();
@@ -604,30 +606,13 @@ public class Main
                 return new Result(true,"",filmesOrganizadosString);
 
             }
-            case "INSERT_DIRECTOR" -> // muita coisa pra editar, precisa ser feito no main
+            case "INSERT_DIRECTOR" ->
             {
-                String[] entradasSplitted = entradas.get(0).split(";");
-                if (!objetoRealizadoresHM2.contains(Integer.parseInt(entradasSplitted[0])))
-                {
-                    objetoRealizadores.add(new ObjetoRealizador(Integer.parseInt(entradasSplitted[0]),entradasSplitted[1],Integer.parseInt(entradasSplitted[2])));
-                    objetoRealizadoresHM.put(entradasSplitted[1],1);
-                    objetoRealizadoresHM2.add(Integer.parseInt(entradasSplitted[0]));
-
-                    ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[2]));
-                    int indexFilme = objetoFilmes.indexOf(filme);
-                    filme.setNumRealizadores(1);
-                    filme.setRealizadores(entradasSplitted[1]);
-                    objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[2]),filme);
-                    objetoFilmes.set(indexFilme,filme);
-
-                    return new Result(true,"","OK");
-                }
-                else
-                {
-                    return new Result(false,"ID DUPLICADO","Erro");
-                }
+                return new Commands().insertDirector(entradas,objetoRealizadores, objetoRealizadoresHM, objetoRealizadoresHM2, objetoFilmesHM, objetoFilmes);
+            }case "INSERT_ACTOR" ->
+            {
+                return new Commands().insertActor(entradas, objetoFilmesHM, objetoAtoresHS, objetoAtoresHM, objetoAtores, objetoFilmes);
             }
-
         }
 
         return new Result(false,"","");
@@ -672,7 +657,7 @@ public class Main
 
       start = System.currentTimeMillis();
 
-      System.out.println(execute("TOP_MOVIES_WITH_MORE_GENDER 3 2017 F").result);
+      System.out.println(execute("INSERT_ACTOR 1253;Amy Barnes;F;13463").result);
 
       filmes1 = objetoFilmes;
 

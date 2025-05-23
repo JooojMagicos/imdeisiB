@@ -1,10 +1,7 @@
 package pt.ulusofona.aed.deisimdb;
 
 import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 public class Commands {
 
@@ -278,10 +275,90 @@ public class Commands {
         return new Result(true, "", mesComMaisFilmes + ":" + maxCount);
     }
 
+    public Result insertActor (ArrayList<String> entradas, HashMap<Integer, ObjetoFIlmes> objetoFilmesHM, HashSet<Integer> objetoAtoresHS, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM, ArrayList<ObjetoAtor> objetoAtores, ArrayList<ObjetoFIlmes> objetoFilmes){
+        String linhaCompleta = String.join("", entradas); // Junta todos os pedaços sem espaços
+        String[] entradasSplitted = linhaCompleta.split(";");
+
+
+        if (!objetoAtoresHS.contains(Integer.parseInt(entradasSplitted[0]))) {
+            ObjetoAtor ator = new ObjetoAtor(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], entradasSplitted[2], Integer.parseInt(entradasSplitted[3]));
+            objetoAtores.add(ator);
+
+            if (objetoAtoresHM.containsKey(entradasSplitted[1])) {
+                objetoAtoresHM.get(entradasSplitted[1]).add(ator);
+            } else {
+                ArrayList<ObjetoAtor> atorFilmes = new ArrayList<>();
+                atorFilmes.add(ator);
+                objetoAtoresHM.put(entradasSplitted[1], atorFilmes);
+            }
+
+            objetoAtoresHS.add(Integer.parseInt(entradasSplitted[0]));
+
+            if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[3]))) {
+                ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[3]));
+                int indexFilme = objetoFilmes.indexOf(filme);
+                filme.setNumAtores(entradasSplitted[2]);
+                objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[3]), filme);
+                objetoFilmes.set(indexFilme, filme);
+            }
+
+            return new Result(true, "", "OK");
+        } else {
+            return new Result(false, "ID DUPLICADO", "Erro");
+        }
+    }
+
+    public Result insertDirector(ArrayList<String> entradas, ArrayList<ObjetoRealizador> objetoRealizadores, HashMap<String,Integer> objetoRealizadoresHM, HashSet<Integer> objetoRealizadoresHM2, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM, ArrayList<ObjetoFIlmes> objetoFilmes){
+        String[] entradasSplitted = entradas.get(0).split(";");
+        if (!objetoRealizadoresHM2.contains(Integer.parseInt(entradasSplitted[0])))
+        {
+            objetoRealizadores.add(new ObjetoRealizador(Integer.parseInt(entradasSplitted[0]),entradasSplitted[1],Integer.parseInt(entradasSplitted[2])));
+            objetoRealizadoresHM.put(entradasSplitted[1],1);
+            objetoRealizadoresHM2.add(Integer.parseInt(entradasSplitted[0]));
+
+            ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[2]));
+            int indexFilme = objetoFilmes.indexOf(filme);
+            filme.setNumRealizadores(1);
+            filme.setRealizadores(entradasSplitted[1]);
+            objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[2]),filme);
+            objetoFilmes.set(indexFilme,filme);
+
+            return new Result(true,"","OK");
+        }
+        else
+        {
+            return new Result(false,"ID DUPLICADO","Erro");
+        }
+    }
+
+    public  Result topMoviesWithMoreGender(ArrayList<String> entradas, ArrayList<ObjetoFIlmes> objetoFilmes){
+        List<Map.Entry<String, Integer>> list = new ArrayList<>();
+        HashMap<String, Integer> anosGeneros = new HashMap<>();
+
+        for (ObjetoFIlmes filmes : objetoFilmes)
+        {
+            if (!(filmes.getAno() == Integer.parseInt(entradas.get(1))))
+            {
+                continue;
+            }
+            else { anosGeneros.put(filmes.getNome(), filmes.getAtoresGenero(entradas.get(2))); }
+        }
+        list.addAll(anosGeneros.entrySet());
+        list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
+        String anosGenerosOrdenado = "";
+
+        for (Map.Entry<String, Integer> anosGeneros2 : list)
+        {
+            anosGenerosOrdenado += anosGeneros2.getKey() + ":" + anosGeneros2.getValue() + "\n";
+        }
+        return new Result(true,"",anosGenerosOrdenado);
+    }
+
 
     public void help()
     {
-        System.out.println("COUNT_MOVIES_MONTH_YEAR <month> <year>\n" + // feitp
+        System.out.println("COUNT_MOVIES_MONTH_YEAR <month> <year>\n" + // feito
                 "COUNT_MOVIES_DIRECTOR <full-name>\n" + // faisca
                 "COUNT_ACTORS_IN_2_YEARS <year-1> <year-2>\n" + // feito - corrigido
                 "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS <year-start> <year-end> <min> <max>\n" + // feito
@@ -289,12 +366,12 @@ public class Commands {
                 "GET_MOVIES_WITH_ACTOR_CONTAINING <name>\n" + // feito
                 "GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING <search-string>\n" + // feito
                 "GET_ACTORS_BY_DIRECTOR <num> <full-name>\n" + // faisca
-                "TOP_MONTH_MOVIE_COUNT <year>\n" + // faisca
+                "TOP_MONTH_MOVIE_COUNT <year>\n" + //feito
                 "TOP_VOTED_ACTORS <num> <year>\n" + // faisca
                 "TOP_MOVIES_WITH_MORE_GENDER <num> <year> <gender>\n" + // jose
                 "TOP_MOVIES_WITH_GENDER_BIAS <num> <year>\n" + // jose
                 "TOP_6_DIRECTORS_WITHIN_FAMILY <year-start> <year-end>\n" + // jose
-                "INSERT_ACTOR <id>;<name>;<gender>;<movie-id>\n" + // faisca
+                "INSERT_ACTOR <id>;<name>;<gender>;<movie-id>\n" + // feito
                 "INSERT_DIRECTOR <id>;<name>;<movie-id>\n" + // feito
                 "DISTANCE_BETWEEN_ACTORS <actor-1>,<actor-2>\n" + // jose
                 "HELP\n" +
