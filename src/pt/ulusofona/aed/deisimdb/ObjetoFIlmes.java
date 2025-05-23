@@ -56,6 +56,10 @@ public class ObjetoFIlmes {
         return mesAno[1]+mesAno[0];
     }
 
+    public int getMovieID(){
+        return id;
+    }
+
     public int getAno()
     {
         String[] anoano = ano.split("-");
