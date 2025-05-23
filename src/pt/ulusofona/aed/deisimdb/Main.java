@@ -547,13 +547,13 @@ public class Main
             {
                 return new Commands().getMoviesWithActorContaining(entradas,objetoFilmesHM,objetoAtoresHM);
             }
-            case "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS" ->
-            {
-                return new Commands().countMoviesBetweenYearsWithNActors(entradas,objetoFilmesHM);
-            }
             case "GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING" ->
             {
                 return new Commands().getTop4YearsWithMoviesContaining(entradas,objetoFilmesHM);
+            }
+            case "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS" ->
+            {
+                return new Commands().countMoviesBetweenYearsWithNActors(entradas,objetoFilmesHM);
             }
             case "TOP_MONTH_MOVIE_COUNT" ->
             {
@@ -561,6 +561,7 @@ public class Main
             }
             case "TOP_MOVIES_WITH_MORE_GENDER" ->
             {
+
                 List<Map.Entry<String, Integer>> list = new ArrayList<>();
                 HashMap<String, Integer> anosGeneros = new HashMap<>();
 
@@ -572,16 +573,12 @@ public class Main
                     }
                     else { anosGeneros.put(filmes.getNome(), filmes.getAtoresGenero(entradas.get(2))); }
                 }
+
                 list.addAll(anosGeneros.entrySet());
                 list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
 
-                String anosGenerosOrdenado = "";
+                return new Result(true,"",list.toString());
 
-                for (Map.Entry<String, Integer> anosGeneros2 : list)
-                {
-                    anosGenerosOrdenado += anosGeneros2.getKey() + ":" + anosGeneros2.getValue() + "\n";
-                }
-                return new Result(true,"",anosGenerosOrdenado);
             }
             case "INSERT_DIRECTOR" -> // muita coisa pra editar, precisa ser feito no main
             {
@@ -651,7 +648,7 @@ public class Main
 
       start = System.currentTimeMillis();
 
-      System.out.println(execute("TOP_MONTH_MOVIE_COUNT 2008").result);
+      System.out.println(execute("TOP_MOVIES_WITH_MORE_GENDER 3 2008 F").result);
 
       filmes1 = objetoFilmes;
 

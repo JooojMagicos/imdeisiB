@@ -66,10 +66,6 @@ public class ObjetoFIlmes {
         return Integer.parseInt(anoano[0]);
     }
 
-    public String getMes() {
-        String[] mes = ano.split("-");
-        return mes[1];
-    }
 
     public void setNumAtores(String gen) {
         if (gen.equals("F"))

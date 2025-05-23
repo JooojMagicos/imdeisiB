@@ -223,7 +223,7 @@ public class Commands {
 
             for (int i = 0; i<entradas.get(0).length()-1 ; i++)
             {
-                if (!(entradas.get(1).charAt(i) == filmes.getNome().charAt(i)))
+                if (!(entradas.get(0).charAt(i) == filmes.getNome().charAt(i)))
                 {
                     break;
                 }
