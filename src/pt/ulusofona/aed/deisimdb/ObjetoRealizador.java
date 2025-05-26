@@ -15,9 +15,18 @@ public class ObjetoRealizador {
         this.movieId = movieId;
 
     }
+    public int getMovieId() {
+        return movieId;
+    }
+    public String getNome() {
+        return nome;
+    }
+
+
 
     @Override
     public String toString() {
         return  id + " | " + nome + " | " + movieId;
     }
 }
+

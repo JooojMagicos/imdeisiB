@@ -74,6 +74,10 @@ public class ObjetoFIlmes {
         return ano.split("-")[1];
     }
 
+    public int getMovieID(){
+        return id;
+    }
+
     public int getAno()
     {
         String[] anoano = ano.split("-");
