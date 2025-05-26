@@ -3,6 +3,7 @@ package pt.ulusofona.aed.deisimdb;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class ObjetoFIlmes {
 
@@ -16,6 +17,7 @@ public class ObjetoFIlmes {
     private final ArrayList<String> realizadores = new ArrayList<>();
     private int numGeneros;
     private final ArrayList<String> generosNomes = new ArrayList<>();
+    private int genderBias = 0;
 
     public ObjetoFIlmes(int id, String nome, String[] ano)
     {
@@ -38,8 +40,20 @@ public class ObjetoFIlmes {
 
     public String getNome() { return nome; }
 
-    public int getQntAtor() { return numAtores+numAtrizes; }
+    public String getGenderBiasGender()
+    {
+        if (numAtrizes > numAtores)
+        {
+            return "F";
+        }
+        else { return "M"; }
+    }
 
+    public int getGenderBias()
+    {
+        genderBias = numAtores + numAtrizes;
+        return (Integer.compare(numAtores,numAtrizes) * 100)/genderBias;
+    }
 
     public int getAtoresGenero(String genero)
     {
@@ -69,6 +83,8 @@ public class ObjetoFIlmes {
         String[] anoano = ano.split("-");
         return Integer.parseInt(anoano[0]);
     }
+
+    public int getNumAtores() { return numAtores+numAtrizes; }
 
 
     public void setNumAtores(String gen) {

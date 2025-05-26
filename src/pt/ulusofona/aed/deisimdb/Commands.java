@@ -99,8 +99,8 @@ public class Commands {
         {
             if (value.getAno() < Integer.parseInt(entradas.get(1))
                     && value.getAno() > Integer.parseInt(entradas.get(0))
-                    && value.getQntAtor() > Integer.parseInt(entradas.get(2))
-                    && value.getQntAtor() < Integer.parseInt(entradas.get(3)))
+                    && value.getNumAtores() > Integer.parseInt(entradas.get(2))
+                    && value.getNumAtores() < Integer.parseInt(entradas.get(3)))
             {
                 ref.qntFilmes += 1;
             }
@@ -206,10 +206,21 @@ public class Commands {
                 }
             }
         }
-        for (Integer ano : qntFilmesPorAno.keySet())
-        {
-            qntdFilmes += ano + ":" + qntFilmesPorAno.get(ano) + "\n";
+        List<Map.Entry<Integer,Integer>> list = new ArrayList<>(qntFilmesPorAno.entrySet());
+
+        list.sort((e1, e2) -> {
+            int cmp = Integer.compare(e2.getValue(), e1.getValue()); // valor descrescente
+            if (cmp == 0) {
+                return Integer.compare(e1.getKey(), e2.getKey());    // chave crescente
+            }
+            return cmp;
+        });
+
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Integer, Integer> entry : list) {
+            sb.append(entry.getKey()).append(":").append(entry.getValue()).append("\n");
         }
+        qntdFilmes = sb.toString();
         if (qntdFilmes.length() == 0)
         {
             return new Result(false,"No results","No results");
@@ -303,28 +314,45 @@ public class Commands {
     }
 
     public  Result topMoviesWithMoreGender(ArrayList<String> entradas, ArrayList<ObjetoFIlmes> objetoFilmes){
-        List<Map.Entry<String, Integer>> list = new ArrayList<>();
-        HashMap<String, Integer> anosGeneros = new HashMap<>();
 
-        for (ObjetoFIlmes filmes : objetoFilmes)
-        {
-            if (!(filmes.getAno() == Integer.parseInt(entradas.get(1))))
-            {
-                continue;
+        Map<String, Integer> anosGeneros = new HashMap<>();
+
+        int contador = 0;
+        int limite = Integer.parseInt(entradas.get(0));
+        int ano = Integer.parseInt(entradas.get(1));
+        String genero = entradas.get(2);
+
+        for (ObjetoFIlmes filme : objetoFilmes) {
+            if (filme.getAno() == ano) {
+                anosGeneros.put(filme.getNome(), filme.getAtoresGenero(genero));
             }
-            else { anosGeneros.put(filmes.getNome(), filmes.getAtoresGenero(entradas.get(2))); }
         }
-        list.addAll(anosGeneros.entrySet());
-        list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
 
-        String anosGenerosOrdenado = "";
+        List<Map.Entry<String, Integer>> ordenados = new ArrayList<>(anosGeneros.entrySet());
 
-        for (Map.Entry<String, Integer> anosGeneros2 : list)
-        {
-            anosGenerosOrdenado += anosGeneros2.getKey() + ":" + anosGeneros2.getValue() + "\n";
+        ordenados.sort((e1, e2) -> {
+            int compare = Integer.compare(e2.getValue(), e1.getValue()); // valor decrescente
+            if (compare == 0) {
+                return e1.getKey().compareToIgnoreCase(e2.getKey());     // chave alfabética
+            }
+            return compare;
+        });
+
+
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : ordenados) {
+            contador++;
+            if (contador > limite)
+            {
+                break;
+            }
+            sb.append(entry.getKey()).append(":").append(entry.getValue()).append("\n");
         }
-        return new Result(true,"",anosGenerosOrdenado);
+
+        return new Result(true, "", sb.toString().trim());
     }
+
+
 
 
     public void help()
@@ -335,15 +363,15 @@ public class Commands {
                 "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS <year-start> <year-end> <min> <max>\n" + // feito
                 "GET_MOVIES_ACTOR_YEAR <year> <full-name>\n" + // feito
                 "GET_MOVIES_WITH_ACTOR_CONTAINING <name>\n" + // feito
-                "GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING <search-string>\n" + // feito
+                "GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING <search-string>\n" + // feito - corrigido
                 "GET_ACTORS_BY_DIRECTOR <num> <full-name>\n" + // faisca
                 "TOP_MONTH_MOVIE_COUNT <year>\n" + //feito
                 "TOP_VOTED_ACTORS <num> <year>\n" + // faisca
-                "TOP_MOVIES_WITH_MORE_GENDER <num> <year> <gender>\n" + // jose
-                "TOP_MOVIES_WITH_GENDER_BIAS <num> <year>\n" + // jose
+                "TOP_MOVIES_WITH_MORE_GENDER <num> <year> <gender>\n" + // feito - corrigido
+                "TOP_MOVIES_WITH_GENDER_BIAS <num> <year>\n" + // em progresso
                 "TOP_6_DIRECTORS_WITHIN_FAMILY <year-start> <year-end>\n" + // jose
-                "INSERT_ACTOR <id>;<name>;<gender>;<movie-id>\n" + // feito
-                "INSERT_DIRECTOR <id>;<name>;<movie-id>\n" + // feito
+                "INSERT_ACTOR <id>;<name>;<gender>;<movie-id>\n" + // feito - quebrado
+                "INSERT_DIRECTOR <id>;<name>;<movie-id>\n" + // feito - quebrado
                 "DISTANCE_BETWEEN_ACTORS <actor-1>,<actor-2>\n" + // jose
                 "HELP\n" +
                 "QUIT");
