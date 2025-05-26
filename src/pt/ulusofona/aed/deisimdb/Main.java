@@ -555,7 +555,20 @@ public class Main
             }
             case "GET_ACTORS_BY_DIRECTOR" ->
             {
-                return new Result(false,"incompleto","No results");
+                String nomeCompleto = "";
+
+                for (int i = 1; i < entradas.size(); i++)
+                {
+                    nomeCompleto += entradas.get(i);
+
+                    if (i!=entradas.size()-1)
+                    {
+                        nomeCompleto += " ";
+                    }
+
+                }
+                System.out.println(nomeCompleto);
+                return new Result(false,"","No results");
             }
             case "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS" ->
             {
@@ -567,50 +580,45 @@ public class Main
             }
             case "TOP_MOVIES_WITH_MORE_GENDER" ->
             {
+                return new Commands().topMoviesWithMoreGender(entradas, objetoFilmes);
+            }
+            case "TOP_MOVIES_WITH_GENDER_BIAS" ->
+            {
 
-
-                List<Map.Entry<String, Integer>> list = new ArrayList<>();
-                HashMap<String, Integer> anosGeneros = new HashMap<>();
-                ArrayList<String> filmes = new ArrayList<>();
-                ArrayList<String> filmesOrganizados = new ArrayList<>();
-                String filmesOrganizadosString = "";
+                HashMap<String,Integer> generoBias = new HashMap<>();
                 int contador = 0;
+                int limite = Integer.parseInt(entradas.get(0));
+                int ano = Integer.parseInt(entradas.get(1));
 
-                for (ObjetoFIlmes filmes2 : objetoFilmes)
+                for (ObjetoFIlmes filmes : objetoFilmes)
                 {
-                    if (filmes2.getAno() == Integer.parseInt(entradas.get(1)) && contador < Integer.parseInt(entradas.get(0 )))
+                    if (filmes.getNumAtores() >= 11 && filmes.getAno() ==ano)
                     {
-                        contador++;
-                        anosGeneros.put(filmes2.getNome(), filmes2.getAtoresGenero(entradas.get(2)));
-
+                        generoBias.put(filmes.getNome()+":"+filmes.getGenderBiasGender(),filmes.getGenderBias());
                     }
-
                 }
 
-                list.addAll(anosGeneros.entrySet());
+                List<Map.Entry<String, Integer>> list = new ArrayList<>(generoBias.entrySet());
 
-                list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-
-                for (int i = list.get(0).getValue(); i>=list.get(list.size()-1).getValue();i--)
-                {
-
-                    for (Map.Entry<String, Integer> list1 : list)
-                    {
-                        if (list1.getValue() == i)
-                        {
-                            filmes.add(list1.getKey()+":"+list1.getValue());
-                        }
+                list.sort((e1, e2) -> {
+                    int compare = Integer.compare(e2.getValue(), e1.getValue()); // decrescente
+                    if (compare == 0) {
+                        return e1.getKey().compareToIgnoreCase(e2.getKey());     // alfabetico
                     }
+                    return compare;
+                });
 
-                    filmes.sort(Comparator.comparing(CharSequence::toString, String::compareToIgnoreCase));
-                    filmesOrganizados.addAll(filmes);
-                    filmes.clear();
-
-
+                StringBuilder sb = new StringBuilder();
+                for (Map.Entry<String, Integer> entry : list) {
+                    contador++;
+                    if (contador > limite)
+                    {
+                        break;
+                    }
+                    sb.append(entry.getKey()).append(":").append(entry.getValue()).append("\n");
                 }
-                filmesOrganizadosString = filmesOrganizados.toString().replace("[","").replace("]","").replace(", ","\n");
-                return new Result(true,"",filmesOrganizadosString);
 
+                return new Result(true, "", sb.toString().trim());
             }
             case "INSERT_DIRECTOR" ->
             {
@@ -619,6 +627,7 @@ public class Main
             {
                 return new Commands().insertActor(entradas, objetoFilmesHM, objetoAtoresHS, objetoAtoresHM, objetoAtores, objetoFilmes);
             }
+
         }
 
         return new Result(false,"","");
@@ -663,7 +672,8 @@ public class Main
 
       start = System.currentTimeMillis();
 
-      System.out.println(execute("TOP_MOVIES_WITH_MORE_GENDER 5 2011 F").result);
+      System.out.println(execute("TOP_MOVIES_WITH_GENDER_BIAS 20 2011").result);
+
 
       filmes1 = objetoFilmes;
 
