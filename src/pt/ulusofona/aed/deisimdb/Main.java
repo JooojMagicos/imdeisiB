@@ -22,7 +22,7 @@ public class Main
     static ArrayList<ObjetoRealizador> objetoRealizadores = new ArrayList<>();
     static HashMap<String,Integer> objetoRealizadoresHM = new HashMap<>();
     static HashSet<Integer> objetoRealizadoresHM2 = new HashSet<>(); // esse hashset só serve pra ver se um realizador ja foi inserido na lista de realizadores.
-
+    static HashMap<String,ArrayList<ObjetoRealizador>> objetoRealizadoresARHM = new HashMap<>();
     // HASHMAP ARRAYLIST ATORES
     static ArrayList<ObjetoAtor> objetoAtores= new ArrayList<>();
     static HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM = new HashMap<>();
@@ -50,6 +50,7 @@ public class Main
         objetoRealizadoresHM = new HashMap<>();
         objetoRealizadores = new ArrayList<>();
         objetoRealizadoresHM2 = new HashSet<>();
+        objetoRealizadoresARHM = new HashMap<>();
 
         objetoGenerosHM = new HashMap<>();
         objetoGeneros = new ArrayList<>();
@@ -259,10 +260,12 @@ public class Main
                                     {
                                         objetoRealizadoresHM.put(nome,1);
                                         objetoRealizadoresHM2.add(id);
+                                        ArrayList<ObjetoRealizador> realizadorFilmes = new ArrayList<>(); realizadorFilmes.add(realizador); objetoRealizadoresARHM.put(nome,realizadorFilmes);
                                     }
                                     else
                                     {
                                         objetoRealizadoresHM.replace(nome,objetoRealizadoresHM.get(nome),objetoRealizadoresHM.get(nome)+1);
+                                        objetoRealizadoresARHM.get(nome).add(realizador);
                                     }
 
                                     if (objetoFilmesHM.containsKey(movieId))
@@ -555,6 +558,7 @@ public class Main
             }
             case "GET_ACTORS_BY_DIRECTOR" ->
             {
+
                 String nomeCompleto = "";
 
                 for (int i = 1; i < entradas.size(); i++)
@@ -567,8 +571,35 @@ public class Main
                     }
 
                 }
-                System.out.println(nomeCompleto);
-                return new Result(false,"","No results");
+
+
+                HashMap<String,Integer> ocorrencias = new HashMap<>();
+                String saida = "";
+                for (ObjetoRealizador filmesRealizador : objetoRealizadoresARHM.get(nomeCompleto))
+                {
+                    for (ArrayList<ObjetoAtor> filmes : objetoAtoresHM.values())
+                    {
+
+                        for (ObjetoAtor atores : filmes){
+
+                            if (atores.getMovieId() == filmesRealizador.getMovieId()){
+                                if (ocorrencias.containsKey(atores.getNome()))
+                                {
+                                    ocorrencias.replace(atores.getNome(),ocorrencias.get(atores.getNome())+1);
+                                }
+                                else { ocorrencias.put(atores.getNome(),1); }
+                                if (ocorrencias.get(atores.getNome())>= Integer.parseInt(entradas.get(0))){
+                                    saida = saida + atores.getNome() + ":" + Integer.toString(ocorrencias.get(atores.getNome())) + "\n";
+                                }
+                            }
+
+
+                        }
+
+                    }
+                }
+
+                return new Result(true,"",saida);
             }
             case "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS" ->
             {
@@ -626,21 +657,6 @@ public class Main
             }case "INSERT_ACTOR" ->
             {
                 return new Commands().insertActor(entradas, objetoFilmesHM, objetoAtoresHS, objetoAtoresHM, objetoAtores, objetoFilmes);
-            }case "GET_ACTORS_BY_DIRECTOR" ->
-            {
-                String nomeCompleto = "";
-
-                for (int i = 1; i < entradas.size(); i++)
-                {
-                    nomeCompleto += entradas.get(i);
-
-                    if (i!=entradas.size()-1)
-                    {
-                        nomeCompleto += " ";
-                    }
-
-                }
-                System.out.println(nomeCompleto);
             }
 
         }
@@ -687,7 +703,7 @@ public class Main
 
       start = System.currentTimeMillis();
 
-      System.out.println(execute("TOP_MOVIES_WITH_GENDER_BIAS 20 2011").result);
+      System.out.println(execute("GET_ACTORS_BY_DIRECTOR 2 Robert Gordon").result);
 
 
       filmes1 = objetoFilmes;
