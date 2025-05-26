@@ -618,6 +618,21 @@ public class Main
             }case "INSERT_ACTOR" ->
             {
                 return new Commands().insertActor(entradas, objetoFilmesHM, objetoAtoresHS, objetoAtoresHM, objetoAtores, objetoFilmes);
+            }case "GET_ACTORS_BY_DIRECTOR" ->
+            {
+                String nomeCompleto = "";
+
+                for (int i = 1; i < entradas.size(); i++)
+                {
+                    nomeCompleto += entradas.get(i);
+
+                    if (i!=entradas.size()-1)
+                    {
+                        nomeCompleto += " ";
+                    }
+
+                }
+                System.out.println(nomeCompleto);
             }
         }
 
@@ -663,7 +678,8 @@ public class Main
 
       start = System.currentTimeMillis();
 
-      System.out.println(execute("TOP_MOVIES_WITH_MORE_GENDER 5 2011 F").result);
+      System.out.println(execute("GET_ACTORS_BY_DIRECTOR 2 christopher nolan").result);
+
 
       filmes1 = objetoFilmes;
 
