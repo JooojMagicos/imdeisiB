@@ -1,6 +1,7 @@
 package pt.ulusofona.aed.deisimdb;
 
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ public class ObjetoFIlmes {
     private int numGeneros;
     private final ArrayList<String> generosNomes = new ArrayList<>();
     private int genderBias = 0;
+
 
     public ObjetoFIlmes(int id, String nome, String[] ano)
     {
@@ -51,8 +53,16 @@ public class ObjetoFIlmes {
 
     public int getGenderBias()
     {
+        float result = 0.000f;
         genderBias = numAtores + numAtrizes;
-        return (Integer.compare(numAtores,numAtrizes) * 100)/genderBias;
+        if(numAtores>numAtrizes)
+        {
+            result = (numAtores*100)/genderBias;
+            System.out.println(result);
+            return (int)result;
+        }
+        else { return (numAtrizes*100)/genderBias; }
+
     }
 
     public int getAtoresGenero(String genero)
