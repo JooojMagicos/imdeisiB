@@ -99,7 +99,8 @@ public class Commands {
         {
             if (value.getAno() < Integer.parseInt(entradas.get(1))
                     && value.getAno() > Integer.parseInt(entradas.get(0))
-                    && value.getNumAtores() > Integer.parseInt(entradas.get(2))
+                    && value.getNumAtores()
+                    > Integer.parseInt(entradas.get(2))
                     && value.getNumAtores() < Integer.parseInt(entradas.get(3)))
             {
                 ref.qntFilmes += 1;

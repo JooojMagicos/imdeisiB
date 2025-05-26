@@ -609,6 +609,7 @@ public class Main
                 });
 
                 StringBuilder sb = new StringBuilder();
+
                 for (Map.Entry<String, Integer> entry : list) {
                     contador++;
                     if (contador > limite)
