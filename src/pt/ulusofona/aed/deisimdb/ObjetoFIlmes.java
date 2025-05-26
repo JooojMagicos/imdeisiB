@@ -9,20 +9,20 @@ public class ObjetoFIlmes {
     private final int id;
     private final String nome;
     private final String ano;
-    private int numAtores;
+    private int numAtores = 0;
     private final ArrayList<ObjetoAtor> atoresObj = new ArrayList<>();
-    private int numAtrizes;
+    private int numAtrizes = 0;
     private int numRealizadores;
     private final ArrayList<String> realizadores = new ArrayList<>();
     private int numGeneros;
     private final ArrayList<String> generosNomes = new ArrayList<>();
 
-    public ObjetoFIlmes(int id, String nome, String[] ano, int numAtores)
+    public ObjetoFIlmes(int id, String nome, String[] ano)
     {
 
         this.id = id;
         this.nome = nome;
-        this.numAtores = numAtores;
+
 
         this.ano = ano[2].trim()+"-"+ano[1].trim()+"-"+ano[0].trim();
 
@@ -55,6 +55,10 @@ public class ObjetoFIlmes {
         String[] mesAno = ano.split("-");
         return mesAno[1]+mesAno[0];
     }
+    public String getMes()
+    {
+        return ano.split("-")[1];
+    }
 
     public int getMovieID(){
         return id;
@@ -66,10 +70,6 @@ public class ObjetoFIlmes {
         return Integer.parseInt(anoano[0]);
     }
 
-    public String getMes() {
-        String[] mes = ano.split("-");
-        return mes[1];
-    }
 
     public void setNumAtores(String gen) {
         if (gen.equals("F"))
@@ -132,4 +132,5 @@ public class ObjetoFIlmes {
         }
 
     }
+
 }

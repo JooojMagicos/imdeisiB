@@ -158,50 +158,30 @@ public class Commands {
 
     public Result getMoviesWithActorContaining(ArrayList<String> entradas, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM,HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM)
     {
-        var ref = new Object() {
-            boolean errado = false;
-        };
+
         ArrayList<String> results = new ArrayList<>();
-        String nomeCompleto = "";
 
-
-        for (String entradas0 : entradas)
-        {
-            nomeCompleto += entradas0;
-            if (!nomeCompleto.isEmpty()) { nomeCompleto += " "; }
-        }
-
-        String finalNomeCompleto = nomeCompleto;
-        System.out.println(nomeCompleto+"  "+ finalNomeCompleto);
-
-        objetoAtoresHM.forEach((key, value) ->
+        for (ArrayList<ObjetoAtor> value : objetoAtoresHM.values())
         {
 
             for (ObjetoAtor atores : value)
             {
-
-                for (int i = 0; i< finalNomeCompleto.length()-1; i++)
-                {
-                    if (atores.getNome().charAt(i) != finalNomeCompleto.charAt(i)) // aparentemente essa funcao nao é pra ser case sensitive - att: nao era kkkkk
-                    {
-                        ref.errado = false;
-                        break;
-                    }
+                if (atores.getNome().contains(entradas.get(0)) && !results.contains(objetoFilmesHM.get(atores.getMovieId()).getNome())) { // NEM FODENDO QUE EU PASSEI 4 HORAS NISSO PRA DESCOBRIR QUE DA PRA FAZER CONTAINS COM CHARSEQUENCE
+                    results.add(objetoFilmesHM.get(atores.getMovieId()).getNome());
                 }
 
-                if (ref.errado) { continue; }
-                results.add(objetoFilmesHM.get(atores.getMovieId()).getNome());
-
             }
-        }); // estou com muito nojo desse código, peço desculpas aos meus professores que estiverem lendo isso
+
+        } // já ta melhor agora EDIT: AAAAAAAAAAAA ME MATE
 
         Collections.sort(results);
+        String resultFinal = results.toString().replace("[","").replace("]","").replace(", ","\n");
 
         if (results.isEmpty())
         {
             return new Result(false,"No results","No results");
         }
-        return new Result(true,"",results.toString());
+        return new Result(true,"",resultFinal);
     }
 
 
@@ -209,41 +189,32 @@ public class Commands {
     public Result getTop4YearsWithMoviesContaining(ArrayList<String> entradas, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM)
     {
         HashMap<Integer,Integer> qntFilmesPorAno = new HashMap<>();
-        var ref = new Object() {
-            String stringSaida = "";
-            int i = 0;
-        };
+        String entradaCompleta = entradas.toString().replace("[","").replace("]","").replace(", "," ");
+        String qntdFilmes = "";
 
         for (ObjetoFIlmes filmes : objetoFilmesHM.values())
         {
-            if (qntFilmesPorAno.size() == 4) { break; }
-
-            for (int i = 0; i<entradas.get(0).length()-1 ; i++)
+            if (filmes.getNome().contains(entradaCompleta))
             {
-                if (!(entradas.get(1).charAt(i) == filmes.getNome().charAt(i)))
+                if (qntFilmesPorAno.containsKey(filmes.getAno()))
                 {
-                    break;
+                    qntFilmesPorAno.put(filmes.getAno(), qntFilmesPorAno.get(filmes.getAno()) + 1);
+                }
+                else
+                {
+                    qntFilmesPorAno.put(filmes.getAno(), 1);
                 }
             }
-
-            if (qntFilmesPorAno.containsKey(filmes.getAno()))
-            {
-
-                qntFilmesPorAno.put(filmes.getAno(),qntFilmesPorAno.get(filmes.getAno())+1);
-            }
-            else
-            {
-                qntFilmesPorAno.put(filmes.getAno(),1);
-            }
         }
-        qntFilmesPorAno.forEach((key,value) ->
+        for (Integer ano : qntFilmesPorAno.keySet())
         {
-
-            ref.stringSaida += key + ":" + value+"\n";
-
-        });
-
-        return new Result(true,"",ref.stringSaida);
+            qntdFilmes += ano + ":" + qntFilmesPorAno.get(ano) + "\n";
+        }
+        if (qntdFilmes.length() == 0)
+        {
+            return new Result(false,"No results","No results");
+        }
+        return new Result(true,"",qntdFilmes);
     }
 
 
@@ -310,7 +281,7 @@ public class Commands {
 
     public Result insertDirector(ArrayList<String> entradas, ArrayList<ObjetoRealizador> objetoRealizadores, HashMap<String,Integer> objetoRealizadoresHM, HashSet<Integer> objetoRealizadoresHM2, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM, ArrayList<ObjetoFIlmes> objetoFilmes){
         String[] entradasSplitted = entradas.get(0).split(";");
-        if (!objetoRealizadoresHM2.contains(Integer.parseInt(entradasSplitted[0])))
+        if (!objetoRealizadoresHM2.contains(Integer.parseInt(entradasSplitted[0])) && objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[3])))
         {
             objetoRealizadores.add(new ObjetoRealizador(Integer.parseInt(entradasSplitted[0]),entradasSplitted[1],Integer.parseInt(entradasSplitted[2])));
             objetoRealizadoresHM.put(entradasSplitted[1],1);
