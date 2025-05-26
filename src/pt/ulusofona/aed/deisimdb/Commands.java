@@ -352,6 +352,43 @@ public class Commands {
         return new Result(true, "", sb.toString().trim());
     }
 
+    public Result getActorsByDirector (ArrayList<String> entradas, HashMap<String,ArrayList<ObjetoRealizador>> objetoRealizadoresARHM, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM){
+        StringBuilder nomeBuilder = new StringBuilder();
+        for (int i = 1; i < entradas.size(); i++) {
+            nomeBuilder.append(entradas.get(i));
+            if (i != entradas.size() - 1) {
+                nomeBuilder.append(" ");
+            }
+        }
+        String nomeCompleto = nomeBuilder.toString();
+
+
+        HashMap<String,Integer> ocorrencias = new HashMap<>();
+        String saida = "";
+        for (ObjetoRealizador filmesRealizador : objetoRealizadoresARHM.get(nomeCompleto)) {
+            for (ArrayList<ObjetoAtor> filmes : objetoAtoresHM.values()) {
+                for (ObjetoAtor atores : filmes) {
+                    if (atores.getMovieId() == filmesRealizador.getMovieId()) {
+                        if (ocorrencias.containsKey(atores.getNome())) {
+                            ocorrencias.put(atores.getNome(), ocorrencias.get(atores.getNome()) + 1);
+                        } else {
+                            ocorrencias.put(atores.getNome(), 1);
+                        }
+                    }
+                }
+            }
+        }
+        StringBuilder saidaBuilder = new StringBuilder();
+        for (String nomeAtor : ocorrencias.keySet()) {
+            int vezes = ocorrencias.get(nomeAtor);
+
+            if (vezes >= Integer.parseInt(entradas.get(0))) {
+                saidaBuilder.append(nomeAtor).append(":").append(vezes).append("\n");
+            }
+        }
+
+        return new Result(true, "", saidaBuilder.toString());
+    }
 
 
 

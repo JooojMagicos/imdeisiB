@@ -558,48 +558,7 @@ public class Main
             }
             case "GET_ACTORS_BY_DIRECTOR" ->
             {
-
-                String nomeCompleto = "";
-
-                for (int i = 1; i < entradas.size(); i++)
-                {
-                    nomeCompleto += entradas.get(i);
-
-                    if (i!=entradas.size()-1)
-                    {
-                        nomeCompleto += " ";
-                    }
-
-                }
-
-
-                HashMap<String,Integer> ocorrencias = new HashMap<>();
-                String saida = "";
-                for (ObjetoRealizador filmesRealizador : objetoRealizadoresARHM.get(nomeCompleto))
-                {
-                    for (ArrayList<ObjetoAtor> filmes : objetoAtoresHM.values())
-                    {
-
-                        for (ObjetoAtor atores : filmes){
-
-                            if (atores.getMovieId() == filmesRealizador.getMovieId()){
-                                if (ocorrencias.containsKey(atores.getNome()))
-                                {
-                                    ocorrencias.replace(atores.getNome(),ocorrencias.get(atores.getNome())+1);
-                                }
-                                else { ocorrencias.put(atores.getNome(),1); }
-                                if (ocorrencias.get(atores.getNome())>= Integer.parseInt(entradas.get(0))){
-                                    saida = saida + atores.getNome() + ":" + Integer.toString(ocorrencias.get(atores.getNome())) + "\n";
-                                }
-                            }
-
-
-                        }
-
-                    }
-                }
-
-                return new Result(true,"",saida);
+                return new  Commands().getActorsByDirector(entradas, objetoRealizadoresARHM, objetoAtoresHM);
             }
             case "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS" ->
             {
