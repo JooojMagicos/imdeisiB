@@ -259,7 +259,44 @@ public class Commands {
         String linhaCompleta = entradas.toString().replace("[","").replace("]","").replace(", "," ");
         String[] entradasSplitted = linhaCompleta.split(";");
 
-            if (entradasSplitted.length > 4) { return new Result(false,"entrada invalida","Erro"); }
+
+        if (entradasSplitted.length != 4) {
+            return new Result(false, "INSERT_ACTOR", "Erro");
+        }
+
+
+
+
+        String idStr = entradasSplitted[0].trim();
+        String nome = entradasSplitted[1].trim();
+        String genero = entradasSplitted[2].trim();
+        String filmeIdStr = entradasSplitted[3].trim();
+
+
+        int id, movieId;
+        try {
+            id = Integer.parseInt(idStr);         // idStr = entradasSplitted[0].trim()
+            movieId = Integer.parseInt(filmeIdStr); // movieIdStr = entradasSplitted[3].trim()
+        } catch (NumberFormatException e) {
+            return new Result(false, "INSERT_ACTOR", "Erro"); // Not a valid int
+        }
+
+        if (idStr.isEmpty() || nome.isEmpty() || genero.isEmpty() || filmeIdStr.isEmpty()) {
+            return new Result(false, "INSERT_ACTOR", "Erro");
+        }
+
+        if (!genero.toUpperCase().equals("M") && !genero.toUpperCase().equals("F")) {
+            return new Result(false, "GENERO", "Erro");
+        }
+
+        if(Integer.parseInt(entradasSplitted[0]) <= 0 || Integer.parseInt(entradasSplitted[3]) <= 0){
+            return new Result(false, "Negativo", "Erro");
+        }
+
+
+
+        if (!objetoAtoresHS.contains(Integer.parseInt(entradasSplitted[0]))) {
+           
 
             ObjetoAtor ator = new ObjetoAtor(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], entradasSplitted[2], Integer.parseInt(entradasSplitted[3]));
 
@@ -420,7 +457,7 @@ public class Commands {
                 "GET_MOVIES_ACTOR_YEAR <year> <full-name>\n" + // feito
                 "GET_MOVIES_WITH_ACTOR_CONTAINING <name>\n" + // feito
                 "GET_TOP_4_YEARS_WITH_MOVIES_CONTAINING <search-string>\n" + // feito - corrigido
-                "GET_ACTORS_BY_DIRECTOR <num> <full-name>\n" + // faisca
+                "GET_ACTORS_BY_DIRECTOR <num> <full-name>\n" + // feito- por corrigir
                 "TOP_MONTH_MOVIE_COUNT <year>\n" + //feito
                 "TOP_VOTED_ACTORS <num> <year>\n" + // faisca
                 "TOP_MOVIES_WITH_MORE_GENDER <num> <year> <gender>\n" + // feito - corrigido
