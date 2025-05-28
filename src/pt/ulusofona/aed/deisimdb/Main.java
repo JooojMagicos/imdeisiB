@@ -26,6 +26,7 @@ public class Main
     // HASHMAP ARRAYLIST ATORES
     static ArrayList<ObjetoAtor> objetoAtores= new ArrayList<>();
     static HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM = new HashMap<>();
+    static HashMap<Integer,ArrayList<String>> objetoAtoresHM2 = new HashMap<>(); // movieid, nome
     static HashSet<Integer> objetoAtoresHS = new HashSet<>();
 
 
@@ -58,6 +59,7 @@ public class Main
 
         objetoAtores = new ArrayList<>();
         objetoAtoresHM = new HashMap<>();
+        objetoAtoresHM2 = new HashMap<>();
 
         objetoLinhasIncorretas = new ArrayList<>();
         objetoGeneroFilmes = new ArrayList<>();
@@ -203,9 +205,21 @@ public class Main
                                     if (objetoAtoresHM.containsKey(nome))
                                     {
                                         objetoAtoresHM.get(nome).add(ator);
+                                        if (objetoAtoresHM2.containsKey(idFilme))
+                                        {
+                                            objetoAtoresHM2.get(idFilme).add(nome);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        ArrayList<ObjetoAtor> atorFilmes = new ArrayList<>();
+                                        ArrayList<String> nomes = new ArrayList<>();
+                                        nomes.add(nome);
+                                        atorFilmes.add(ator);
+                                        objetoAtoresHM.put(nome,atorFilmes);
+                                        objetoAtoresHM2.put(idFilme, nomes);
 
                                     }
-                                    else { ArrayList<ObjetoAtor> atorFilmes = new ArrayList<>(); atorFilmes.add(ator); objetoAtoresHM.put(nome,atorFilmes); }
 
 
                                     if (objetoFilmesHM.containsKey(idFilme))
@@ -566,7 +580,7 @@ public class Main
             }
             case "GET_ACTORS_BY_DIRECTOR" ->
             {
-                return new  Commands().getActorsByDirector(entradas, objetoRealizadoresARHM, objetoAtoresHM);
+                return new  Commands().getActorsByDirector(entradas, objetoRealizadoresARHM, objetoAtoresHM2);
             }
             case "COUNT_MOVIES_BETWEEN_YEARS_WITH_N_ACTORS" ->
             {
@@ -631,30 +645,30 @@ public class Main
 
                 ArrayList<String[]> resultados = new ArrayList<>();
 
-                for (ObjetoMovieVotes votos : objetoMovieVotesHM.values()) {
-                    if(objetoFilmesHM.containsKey(votos.getMovieId())){
-                        for (ArrayList<ObjetoAtor> listaAtores : objetoAtoresHM.values()) {
-                            for (ObjetoAtor ator : listaAtores) {
-                                if (ator.getMovieId() == votos.getMovieId()) {
-                                    resultados.add(new String[]{ator.getNome(), String.valueOf(votos.getRating())});
-                                }
-                            }
-                        }
-                    }
+//                for (ObjetoMovieVotes votos : objetoMovieVotesHM.values()) {
+//                    if(objetoFilmesHM.containsKey(votos.getMovieId())){
+//                        for (ArrayList<ObjetoAtor> listaAtores : objetoAtoresHM.values()) {
+//                            for (ObjetoAtor ator : listaAtores) {
+//                                if (ator.getMovieId() == votos.getMovieId()) {
+//                                    resultados.add(new String[]{ator.getNome(), String.valueOf(votos.getRating())});
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//
+//                }
 
-
-                }
-
-                resultados.sort((a, b) -> Double.compare(Double.parseDouble(b[1]), Double.parseDouble(a[1])));
-
-                if (resultados.size() > Integer.parseInt(entradas.get(0))) {
-                    resultados = new ArrayList<>(resultados.subList(0, Integer.parseInt(entradas.get(0))));
-                }
-
-                StringBuilder saidaBuilder = new StringBuilder();
-                for (String[] par : resultados) {
-                    saidaBuilder.append(par[0]).append(":").append(par[1]).append("\n");
-                }
+//                resultados.sort((a, b) -> Double.compare(Double.parseDouble(b[1]), Double.parseDouble(a[1])));
+//
+//                if (resultados.size() > Integer.parseInt(entradas.get(0))) {
+//                    resultados = new ArrayList<>(resultados.subList(0, Integer.parseInt(entradas.get(0))));
+//                }
+//
+                  StringBuilder saidaBuilder = new StringBuilder();
+//                for (String[] par : resultados) {
+//                    saidaBuilder.append(par[0]).append(":").append(par[1]).append("\n");
+//                }
 
                 return new Result(true, "", saidaBuilder.toString());
             }
@@ -705,10 +719,10 @@ public class Main
       start = System.currentTimeMillis();
 
 
-      System.out.println(execute("INSERT_ACTOR 29283;ze abc;M;319067").result);
+      System.out.println(execute("INSERT_DIRECTOR 29283;ze abc;319067").result);
       System.out.println(execute("GET_ACTORS_BY_DIRECTOR 0 Robert Gordon").result);
       System.out.println(objetoRealizadoresARHM.get("Robert Gordon"));
-¡
+
 
 
         filmes1 = objetoFilmes;

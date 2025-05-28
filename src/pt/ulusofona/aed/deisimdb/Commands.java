@@ -264,9 +264,6 @@ public class Commands {
             return new Result(false, "INSERT_ACTOR", "Erro");
         }
 
-
-
-
         String idStr = entradasSplitted[0].trim();
         String nome = entradasSplitted[1].trim();
         String genero = entradasSplitted[2].trim();
@@ -296,7 +293,7 @@ public class Commands {
 
 
         if (!objetoAtoresHS.contains(Integer.parseInt(entradasSplitted[0]))) {
-           
+
 
             ObjetoAtor ator = new ObjetoAtor(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], entradasSplitted[2], Integer.parseInt(entradasSplitted[3]));
 
@@ -305,30 +302,36 @@ public class Commands {
                 return new Result(false, "nome DUPLICADO", "Erro");
             } else {
 
-                if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[3])))
-                {
+                if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[3]))) {
                     ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[3]));
                     int indexFilme = objetoFilmes.indexOf(filme);
                     filme.setNumAtores(entradasSplitted[2]);
                     objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[3]), filme);
                     objetoFilmes.set(indexFilme, filme);
+                } else {
+                    return new Result(false, "filme inexistente", "Erro");
                 }
-                else { return new Result(false, "filme inexistente", "Erro"); }
 
                 ArrayList<ObjetoAtor> atorFilmes = new ArrayList<>();
                 atorFilmes.add(ator);
+                objetoAtores.add(ator);
                 objetoAtoresHM.put(entradasSplitted[1], atorFilmes);
                 objetoAtoresHS.add(Integer.parseInt(entradasSplitted[0]));
 
             }
 
             return new Result(true, "", "OK");
-
+        }
+        else {
+            return new Result(false, "nome  ou id DUPLICADO", "Erro");
+        }
     }
 
-    public Result insertDirector(ArrayList<String> entradas, ArrayList<ObjetoRealizador> objetoRealizadores, HashMap<String,Integer> objetoRealizadoresHM, HashSet<Integer> objetoRealizadoresHM2, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM, ArrayList<ObjetoFIlmes> objetoFilmes, HashMap<String,ArrayList<ObjetoRealizador>> objetoRealizadoresARHM){
+
+    public Result insertDirector(ArrayList<String> entradas, ArrayList<ObjetoRealizador> objetoRealizadores, HashMap<String,Integer> objetoRealizadoresHM, HashSet<Integer> objetoRealizadoresHM2, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM, ArrayList<ObjetoFIlmes> objetoFilmes, HashMap<String,ArrayList<ObjetoRealizador>> objetoRealizadoresARHM)
+        {
         String linhaCompleta = entradas.toString().replace("[","").replace("]","").replace(", "," ");
-        String[] entradasSplitted = entradas.get(0).split(";");
+        String[] entradasSplitted = linhaCompleta.split(";");
 
         if (entradasSplitted.length != 3) { return new Result(false,"entrada invalida","Erro"); }
 
@@ -336,18 +339,17 @@ public class Commands {
         {
             return new Result(false,"nome  ou id DUPLICADO","Erro");
         }
-        else
-        {
-            if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[2])))
-            {
+        else {
+            if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[2]))) {
                 ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[2]));
                 int indexFilme = objetoFilmes.indexOf(filme);
                 filme.setNumRealizadores(1);
                 filme.setRealizadores(entradasSplitted[1]);
-                objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[2]),filme);
-                objetoFilmes.set(indexFilme,filme);
+                objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[2]), filme);
+
+            } else {
+                return new Result(false, "filme inexistente", "Erro");
             }
-            else { return new Result(false,"filme inexistente","Erro"); }
 
             objetoRealizadores.add(new ObjetoRealizador(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], Integer.parseInt(entradasSplitted[2])));
             objetoRealizadoresHM.put(entradasSplitted[1], 1);
@@ -399,7 +401,7 @@ public class Commands {
         return new Result(true, "", sb.toString().trim());
     }
 
-    public Result getActorsByDirector (ArrayList<String> entradas, HashMap<String,ArrayList<ObjetoRealizador>> objetoRealizadoresARHM, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM){
+    public Result getActorsByDirector (ArrayList<String> entradas, HashMap<String,ArrayList<ObjetoRealizador>> objetoRealizadoresARHM, HashMap<Integer,ArrayList<String>> objetoAtoresHM2){
 
         StringBuilder nomeBuilder = new StringBuilder();
 
@@ -410,30 +412,39 @@ public class Commands {
             }
         }
 
-
         String nomeCompleto = nomeBuilder.toString();
         HashMap<String,Integer> ocorrencias = new HashMap<>();
-        String saida = "";
+        ArrayList<ObjetoRealizador> realizadors = new ArrayList<>();
 
-        if (objetoRealizadoresARHM.get(nomeCompleto) == null) { return new Result(false,"Diretor Inexistente","No results"); }
-
-
-        for (ObjetoRealizador filmesRealizador : objetoRealizadoresARHM.get(nomeCompleto))
+        for (ArrayList<ObjetoRealizador> value : objetoRealizadoresARHM.values())
         {
-            for (ArrayList<ObjetoAtor> filmes : objetoAtoresHM.values())
+
+            if (nomeCompleto.equals(value.get(0).getNome()));
+            realizadors.addAll(value);
+
+        }
+        for (ObjetoRealizador value : realizadors)
+        {
+            if (objetoAtoresHM2.containsKey(value.getMovieId()))
             {
-                for (ObjetoAtor atores : filmes)
+                for (String nomeAtor : objetoAtoresHM2.get(value.getMovieId()))
                 {
-                    if (atores.getMovieId() == filmesRealizador.getMovieId()) {
-                        if (ocorrencias.containsKey(atores.getNome())) {
-                            ocorrencias.put(atores.getNome(), ocorrencias.get(atores.getNome()) + 1);
-                        } else {
-                            ocorrencias.put(atores.getNome(), 1);
-                        }
+                    if (ocorrencias.containsKey(nomeAtor))
+                    {
+                        ocorrencias.put(nomeAtor, ocorrencias.get(nomeAtor) + 1);
+                    }
+                    else
+                    {
+                        ocorrencias.put(nomeAtor, 1);
                     }
                 }
             }
         }
+
+        if (objetoRealizadoresARHM.get(nomeCompleto) == null) { return new Result(false,"Diretor Inexistente","No results"); }
+
+
+
         StringBuilder saidaBuilder = new StringBuilder();
         for (String nomeAtor : ocorrencias.keySet()) {
             int vezes = ocorrencias.get(nomeAtor);
