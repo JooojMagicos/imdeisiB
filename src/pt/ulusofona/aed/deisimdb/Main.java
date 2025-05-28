@@ -576,6 +576,7 @@ public class Main
             {
 
                 HashMap<String,Integer> generoBias = new HashMap<>();
+
                 int contador = 0;
                 int limite = Integer.parseInt(entradas.get(0));
                 int ano = Integer.parseInt(entradas.get(1));
@@ -663,7 +664,7 @@ public class Main
 
       start = System.currentTimeMillis();
 
-      System.out.println(execute("GET_ACTORS_BY_DIRECTOR 2 Robert Gordon").result);
+      System.out.println(execute("GET_MOVIES_ACTOR_YEAR 2011 Maximiliano Hernández").result);
 
 
       filmes1 = objetoFilmes;
