@@ -254,9 +254,11 @@ public class Commands {
         return new Result(true, "", mesComMaisFilmes + ":" + maxCount);
     }
 
-    public Result insertActor (ArrayList<String> entradas, HashMap<Integer, ObjetoFIlmes> objetoFilmesHM, HashSet<Integer> objetoAtoresHS, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM, ArrayList<ObjetoAtor> objetoAtores, ArrayList<ObjetoFIlmes> objetoFilmes){
-        String linhaCompleta = String.join("", entradas); // Junta todos os pedaços sem espaços
+    public Result insertActor (ArrayList<String> entradas, HashMap<Integer, ObjetoFIlmes> objetoFilmesHM, HashSet<Integer> objetoAtoresHS, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM, ArrayList<ObjetoAtor> objetoAtores, ArrayList<ObjetoFIlmes> objetoFilmes)
+    {
+        String linhaCompleta = entradas.toString().replace("[","").replace("]","").replace(", "," ");
         String[] entradasSplitted = linhaCompleta.split(";");
+
 
         if (entradasSplitted.length != 4) {
             return new Result(false, "INSERT_ACTOR", "Erro");
@@ -297,53 +299,65 @@ public class Commands {
            
 
             ObjetoAtor ator = new ObjetoAtor(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], entradasSplitted[2], Integer.parseInt(entradasSplitted[3]));
-            objetoAtores.add(ator);
 
-            if (objetoAtoresHM.containsKey(entradasSplitted[1])) {
-                objetoAtoresHM.get(entradasSplitted[1]).add(ator);
+
+            if (objetoAtoresHM.containsKey(entradasSplitted[1]) || objetoAtoresHS.contains(Integer.parseInt(entradasSplitted[0]))) {
+                return new Result(false, "nome DUPLICADO", "Erro");
             } else {
+
+                if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[3])))
+                {
+                    ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[3]));
+                    int indexFilme = objetoFilmes.indexOf(filme);
+                    filme.setNumAtores(entradasSplitted[2]);
+                    objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[3]), filme);
+                    objetoFilmes.set(indexFilme, filme);
+                }
+                else { return new Result(false, "filme inexistente", "Erro"); }
+
                 ArrayList<ObjetoAtor> atorFilmes = new ArrayList<>();
                 atorFilmes.add(ator);
                 objetoAtoresHM.put(entradasSplitted[1], atorFilmes);
-            }
+                objetoAtoresHS.add(Integer.parseInt(entradasSplitted[0]));
 
-            objetoAtoresHS.add(Integer.parseInt(entradasSplitted[0]));
-
-            if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[3]))) {
-                ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[3]));
-                int indexFilme = objetoFilmes.indexOf(filme);
-                filme.setNumAtores(entradasSplitted[2]);
-                objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[3]), filme);
-                objetoFilmes.set(indexFilme, filme);
             }
 
             return new Result(true, "", "OK");
-        } else {
-            return new Result(false, "ID DUPLICADO", "Erro");
-        }
+
     }
 
-    public Result insertDirector(ArrayList<String> entradas, ArrayList<ObjetoRealizador> objetoRealizadores, HashMap<String,Integer> objetoRealizadoresHM, HashSet<Integer> objetoRealizadoresHM2, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM, ArrayList<ObjetoFIlmes> objetoFilmes){
+    public Result insertDirector(ArrayList<String> entradas, ArrayList<ObjetoRealizador> objetoRealizadores, HashMap<String,Integer> objetoRealizadoresHM, HashSet<Integer> objetoRealizadoresHM2, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM, ArrayList<ObjetoFIlmes> objetoFilmes, HashMap<String,ArrayList<ObjetoRealizador>> objetoRealizadoresARHM){
+        String linhaCompleta = entradas.toString().replace("[","").replace("]","").replace(", "," ");
         String[] entradasSplitted = entradas.get(0).split(";");
-        if (!objetoRealizadoresHM2.contains(Integer.parseInt(entradasSplitted[0])) && objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[3])))
+
+        if (entradasSplitted.length != 3) { return new Result(false,"entrada invalida","Erro"); }
+
+        if (objetoRealizadoresHM.containsKey(entradasSplitted[1]) || objetoRealizadoresHM2.contains(Integer.parseInt(entradasSplitted[0])))
         {
-            objetoRealizadores.add(new ObjetoRealizador(Integer.parseInt(entradasSplitted[0]),entradasSplitted[1],Integer.parseInt(entradasSplitted[2])));
-            objetoRealizadoresHM.put(entradasSplitted[1],1);
-            objetoRealizadoresHM2.add(Integer.parseInt(entradasSplitted[0]));
-
-            ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[2]));
-            int indexFilme = objetoFilmes.indexOf(filme);
-            filme.setNumRealizadores(1);
-            filme.setRealizadores(entradasSplitted[1]);
-            objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[2]),filme);
-            objetoFilmes.set(indexFilme,filme);
-
-            return new Result(true,"","OK");
+            return new Result(false,"nome  ou id DUPLICADO","Erro");
         }
         else
         {
-            return new Result(false,"ID DUPLICADO","Erro");
+            if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[2])))
+            {
+                ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[2]));
+                int indexFilme = objetoFilmes.indexOf(filme);
+                filme.setNumRealizadores(1);
+                filme.setRealizadores(entradasSplitted[1]);
+                objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[2]),filme);
+                objetoFilmes.set(indexFilme,filme);
+            }
+            else { return new Result(false,"filme inexistente","Erro"); }
+
+            objetoRealizadores.add(new ObjetoRealizador(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], Integer.parseInt(entradasSplitted[2])));
+            objetoRealizadoresHM.put(entradasSplitted[1], 1);
+            objetoRealizadoresHM2.add(Integer.parseInt(entradasSplitted[0]));
+            objetoRealizadoresARHM.put(entradasSplitted[1], objetoRealizadores);
+
         }
+
+            return new Result(true,"","OK");
+
     }
 
     public  Result topMoviesWithMoreGender(ArrayList<String> entradas, ArrayList<ObjetoFIlmes> objetoFilmes){
@@ -386,21 +400,30 @@ public class Commands {
     }
 
     public Result getActorsByDirector (ArrayList<String> entradas, HashMap<String,ArrayList<ObjetoRealizador>> objetoRealizadoresARHM, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM){
+
         StringBuilder nomeBuilder = new StringBuilder();
+
         for (int i = 1; i < entradas.size(); i++) {
             nomeBuilder.append(entradas.get(i));
             if (i != entradas.size() - 1) {
                 nomeBuilder.append(" ");
             }
         }
+
+
         String nomeCompleto = nomeBuilder.toString();
-
-
         HashMap<String,Integer> ocorrencias = new HashMap<>();
         String saida = "";
-        for (ObjetoRealizador filmesRealizador : objetoRealizadoresARHM.get(nomeCompleto)) {
-            for (ArrayList<ObjetoAtor> filmes : objetoAtoresHM.values()) {
-                for (ObjetoAtor atores : filmes) {
+
+        if (objetoRealizadoresARHM.get(nomeCompleto) == null) { return new Result(false,"Diretor Inexistente","No results"); }
+
+
+        for (ObjetoRealizador filmesRealizador : objetoRealizadoresARHM.get(nomeCompleto))
+        {
+            for (ArrayList<ObjetoAtor> filmes : objetoAtoresHM.values())
+            {
+                for (ObjetoAtor atores : filmes)
+                {
                     if (atores.getMovieId() == filmesRealizador.getMovieId()) {
                         if (ocorrencias.containsKey(atores.getNome())) {
                             ocorrencias.put(atores.getNome(), ocorrencias.get(atores.getNome()) + 1);
