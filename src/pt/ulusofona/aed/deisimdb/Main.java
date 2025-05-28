@@ -256,11 +256,15 @@ public class Main
 
                                     ObjetoRealizador realizador = new ObjetoRealizador(id, nome, movieId);
                                     objetoRealizadores.add(realizador);
+
                                     if (!objetoRealizadoresHM.containsKey(nome))
                                     {
                                         objetoRealizadoresHM.put(nome,1);
                                         objetoRealizadoresHM2.add(id);
-                                        ArrayList<ObjetoRealizador> realizadorFilmes = new ArrayList<>(); realizadorFilmes.add(realizador); objetoRealizadoresARHM.put(nome,realizadorFilmes);
+                                        ArrayList<ObjetoRealizador> realizadorFilmes = new ArrayList<>();
+                                        realizadorFilmes.add(realizador);
+                                        objetoRealizadoresARHM.put(nome,realizadorFilmes);
+
                                     }
                                     else
                                     {
@@ -614,7 +618,7 @@ public class Main
             }
             case "INSERT_DIRECTOR" ->
             {
-                return new Commands().insertDirector(entradas,objetoRealizadores, objetoRealizadoresHM, objetoRealizadoresHM2, objetoFilmesHM, objetoFilmes);
+                return new Commands().insertDirector(entradas,objetoRealizadores, objetoRealizadoresHM, objetoRealizadoresHM2, objetoFilmesHM, objetoFilmes, objetoRealizadoresARHM);
             }case "INSERT_ACTOR" ->
             {
                 return new Commands().insertActor(entradas, objetoFilmesHM, objetoAtoresHS, objetoAtoresHM, objetoAtores, objetoFilmes);
@@ -664,7 +668,9 @@ public class Main
 
       start = System.currentTimeMillis();
 
-      System.out.println(execute("GET_MOVIES_ACTOR_YEAR 2011 Maximiliano Hernández").result);
+      System.out.println(execute("INSERT_ACTOR 29283;ze abc;M;319067").result);
+      System.out.println(execute("GET_ACTORS_BY_DIRECTOR 0 Robert Gordon").result);
+      System.out.println(objetoRealizadoresARHM.get("Robert Gordon"));
 
 
       filmes1 = objetoFilmes;
