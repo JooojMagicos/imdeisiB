@@ -580,6 +580,7 @@ public class Main
             {
 
                 HashMap<String,Integer> generoBias = new HashMap<>();
+
                 int contador = 0;
                 int limite = Integer.parseInt(entradas.get(0));
                 int ano = Integer.parseInt(entradas.get(1));
@@ -603,6 +604,7 @@ public class Main
                 });
 
                 StringBuilder sb = new StringBuilder();
+
                 for (Map.Entry<String, Integer> entry : list) {
                     contador++;
                     if (contador > limite)
@@ -698,7 +700,9 @@ public class Main
 
       start = System.currentTimeMillis();
 
+
         System.out.println(execute("TOP_VOTED_ACTORS 2 1994").result);                 // ID não numérico
+
 
 
 
