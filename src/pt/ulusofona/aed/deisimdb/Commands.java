@@ -99,7 +99,8 @@ public class Commands {
         {
             if (value.getAno() < Integer.parseInt(entradas.get(1))
                     && value.getAno() > Integer.parseInt(entradas.get(0))
-                    && value.getNumAtores() > Integer.parseInt(entradas.get(2))
+                    && value.getNumAtores()
+                    > Integer.parseInt(entradas.get(2))
                     && value.getNumAtores() < Integer.parseInt(entradas.get(3)))
             {
                 ref.qntFilmes += 1;
@@ -117,15 +118,9 @@ public class Commands {
         ArrayList<String> filmesDoAtor = new ArrayList<>();
         String stringSaida = "";
         String nomeCompleto = "";
-        for (int i = 1; i<entradas.size(); i++)
-        {
-            nomeCompleto += entradas.get(i);
 
-            if (entradas.size()-1 != i)
-            {
-                nomeCompleto += " ";
-            }
-        }
+        nomeCompleto = String.join(" ", entradas.subList(1, entradas.size()));
+
 
         if (objetoAtoresHM.containsKey(nomeCompleto))
         {
@@ -140,14 +135,9 @@ public class Commands {
 
         else { return new Result(false,"Ator Inexistente","No results"); }
 
-        for (int i = 0; i < filmesDoAtor.size(); i++)
-        {
-            stringSaida += filmesDoAtor.get(i);
-            if (filmesDoAtor.size()-1 != i)
-            {
-                stringSaida += "\n";
-            }
-        }
+        filmesDoAtor.sort(Comparator.reverseOrder());
+        stringSaida = filmesDoAtor.toString().replace("[","").replace("]","").replace(", ","\n");
+
         if (filmesDoAtor.isEmpty())
         {
             return new Result(false,"No results","No results");
@@ -191,6 +181,7 @@ public class Commands {
         HashMap<Integer,Integer> qntFilmesPorAno = new HashMap<>();
         String entradaCompleta = entradas.toString().replace("[","").replace("]","").replace(", "," ");
         String qntdFilmes = "";
+        int count = 0;
 
         for (ObjetoFIlmes filmes : objetoFilmesHM.values())
         {
@@ -217,8 +208,14 @@ public class Commands {
         });
 
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<Integer, Integer> entry : list) {
+        for (Map.Entry<Integer, Integer> entry : list)
+        {
             sb.append(entry.getKey()).append(":").append(entry.getValue()).append("\n");
+            count++;
+            if (count == 4)
+            {
+                break;
+            }
         }
         qntdFilmes = sb.toString();
         if (qntdFilmes.length() == 0)
@@ -262,7 +259,7 @@ public class Commands {
         String[] entradasSplitted = linhaCompleta.split(";");
 
 
-        if (!objetoAtoresHS.contains(Integer.parseInt(entradasSplitted[0]))) {
+        if (!objetoAtoresHS.contains(Integer.parseInt(entradasSplitted[0])) && !objetoAtoresHM.containsKey(entradasSplitted[1])) {
             ObjetoAtor ator = new ObjetoAtor(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], entradasSplitted[2], Integer.parseInt(entradasSplitted[3]));
             objetoAtores.add(ator);
 
