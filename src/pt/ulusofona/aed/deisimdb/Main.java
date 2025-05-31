@@ -202,13 +202,22 @@ public class Main
                                     String genero = dados[2].trim();
                                     ObjetoAtor ator = new ObjetoAtor(id, nome, genero, idFilme);
                                     objetoAtores.add(ator);
+
                                     if (objetoAtoresHM.containsKey(nome))
                                     {
                                         objetoAtoresHM.get(nome).add(ator);
                                         if (objetoAtoresHM2.containsKey(idFilme))
                                         {
                                             objetoAtoresHM2.get(idFilme).add(nome);
+
                                         }
+                                        else
+                                        {
+                                            ArrayList<String> nomes = new ArrayList<>();
+                                            nomes.add(nome);
+                                            objetoAtoresHM2.put(idFilme, nomes);
+                                        }
+
                                     }
                                     else
                                     {
@@ -217,7 +226,13 @@ public class Main
                                         nomes.add(nome);
                                         atorFilmes.add(ator);
                                         objetoAtoresHM.put(nome,atorFilmes);
-                                        objetoAtoresHM2.put(idFilme, nomes);
+                                        if (objetoAtoresHM2.containsKey(idFilme))
+                                        {
+                                            objetoAtoresHM2.get(idFilme).add(nome);
+
+                                        }
+                                        else { objetoAtoresHM2.put(idFilme, nomes); }
+
 
                                     }
 
@@ -279,13 +294,24 @@ public class Main
                                         objetoRealizadoresHM2.add(id);
                                         ArrayList<ObjetoRealizador> realizadorFilmes = new ArrayList<>();
                                         realizadorFilmes.add(realizador);
-                                        objetoRealizadoresARHM.put(nome,realizadorFilmes);
+                                        if (!objetoRealizadoresARHM.containsKey(nome))
+                                        {
+                                            objetoRealizadoresARHM.put(nome,realizadorFilmes);
+                                        }
+                                        else { objetoRealizadoresARHM.get(nome).add(realizador);}
 
                                     }
                                     else
                                     {
                                         objetoRealizadoresHM.replace(nome,objetoRealizadoresHM.get(nome),objetoRealizadoresHM.get(nome)+1);
-                                        objetoRealizadoresARHM.get(nome).add(realizador);
+                                        ArrayList<ObjetoRealizador> realizadorFilmes = new ArrayList<>();
+                                        realizadorFilmes.add(realizador);
+                                        if (!objetoRealizadoresARHM.containsKey(nome))
+                                        {
+                                            objetoRealizadoresARHM.put(nome,realizadorFilmes);
+
+                                        }
+                                        else { objetoRealizadoresARHM.get(nome).add(realizador);}
                                     }
 
                                     if (objetoFilmesHM.containsKey(movieId))
@@ -296,9 +322,8 @@ public class Main
                                         filme.setRealizadores(nome);
                                         objetoFilmesHM.replace(movieId,filme);
                                         objetoFilmes.set(indexFilme,filme);
+
                                     }
-
-
 
                                 }
                                 else
@@ -639,7 +664,7 @@ public class Main
                 return new Commands().insertDirector(entradas,objetoRealizadores, objetoRealizadoresHM, objetoRealizadoresHM2, objetoFilmesHM, objetoFilmes, objetoRealizadoresARHM);
             }case "INSERT_ACTOR" ->
             {
-                return new Commands().insertActor(entradas, objetoFilmesHM, objetoAtoresHS, objetoAtoresHM, objetoAtores, objetoFilmes);
+                return new Commands().insertActor(entradas, objetoFilmesHM, objetoAtoresHS, objetoAtoresHM, objetoAtores, objetoAtoresHM2);
             }case "TOP_VOTED_ACTORS" -> {
 
 
@@ -698,7 +723,6 @@ public class Main
 
         ArrayList<ObjetoLinhaIncorreta> filmes = objetoLinhasIncorretas;
         ArrayList<ObjetoFIlmes> filmes1 = objetoFilmes;
-
       for (Object printafilmes : filmes) // isso aqui testa se ele vai printar tudo direitinho, só basta mudar o .filme pra outra coisa
        {
            System.out.println(printafilmes.toString()+"\n");
@@ -717,11 +741,16 @@ public class Main
       hmcoisa.put("c","b");
 
       start = System.currentTimeMillis();
+      String command = "";
 
 
+      System.out.println(execute("GET_ACTORS_BY_DIRECTOR 0 ze abc").result);
       System.out.println(execute("INSERT_DIRECTOR 29283;ze abc;319067").result);
+        System.out.println(execute("GET_ACTORS_BY_DIRECTOR 0 ze abc").result);
+        System.out.println(objetoRealizadoresARHM.get("Robert Gordon"));
       System.out.println(execute("GET_ACTORS_BY_DIRECTOR 0 Robert Gordon").result);
-      System.out.println(objetoRealizadoresARHM.get("Robert Gordon"));
+        System.out.println(execute("GET_ACTORS_BY_DIRECTOR 0 ze abc").result);
+
 
 
 
