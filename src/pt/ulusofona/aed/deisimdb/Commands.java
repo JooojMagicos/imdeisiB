@@ -45,7 +45,7 @@ public class Commands {
             }
 
         }
-        System.out.println(nomeCompleto);
+
 
         if (objetoRealizadoresHM.containsKey(nomeCompleto))
         {
@@ -60,7 +60,7 @@ public class Commands {
     public Result countActorsIn2Years(ArrayList<String> entradas, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM)
     {
         int count = 0;
-        long start = System.currentTimeMillis();
+
         for (ArrayList<ObjetoAtor> atores : objetoAtoresHM.values())
         {
             for (ObjetoAtor atorFilmes : atores)
@@ -80,8 +80,7 @@ public class Commands {
                 }
             }
         }
-        long end = System.currentTimeMillis();
-        System.out.println("Tempo de execucao: " + (end - start) + " ms");
+
 
         return new Result(true,"", Integer.toString(count));
     }
@@ -261,24 +260,31 @@ public class Commands {
 
         if (entradasSplitted.length != 4) { return new Result(false,"entrada invalida","Erro"); }
 
-        if (objetoAtoresHM.containsKey(entradasSplitted[1]) || objetoAtoresHS.contains(Integer.parseInt(entradasSplitted[0])))
+        if (objetoAtoresHS.contains(Integer.parseInt(entradasSplitted[0])))
         {
-            return new Result(false,"nome  ou id DUPLICADO","Erro");
+            return new Result(false,"id DUPLICADO","Erro");
         }
-        else {
-            if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[3]))) {
+        else
+        {
+            if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[3])))
+            {
+
                 ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[3]));
                 filme.setNumAtores(entradasSplitted[2]);
                 filme.setAtoresObj(new ObjetoAtor(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], entradasSplitted[2],Integer.parseInt(entradasSplitted[3]) ));
                 objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[3]), filme);
+
 
             } else {
                 return new Result(false, "filme inexistente", "Erro");
             }
 
             objetoAtores.add(new ObjetoAtor(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], entradasSplitted[2],Integer.parseInt(entradasSplitted[3]) ));
-            ArrayList<ObjetoAtor> objetoAtores2 = new ArrayList<>();
-            objetoAtoresHM.put(entradasSplitted[1], objetoAtores2);
+            ArrayList<ObjetoAtor> filmesDele = new ArrayList<>();
+            filmesDele.add(new ObjetoAtor(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], entradasSplitted[2],Integer.parseInt(entradasSplitted[3])));
+            objetoAtoresHM.put(entradasSplitted[1], filmesDele);
+            objetoAtoresHS.add(Integer.parseInt(entradasSplitted[0]));
+
             if (objetoAtoresHM2.containsKey(Integer.parseInt(entradasSplitted[3])))
             {
                 objetoAtoresHM2.get(Integer.parseInt(entradasSplitted[3])).add(entradasSplitted[1]);
@@ -287,7 +293,7 @@ public class Commands {
             {
                 objetoAtoresHM2.put(Integer.parseInt(entradasSplitted[3]), new ArrayList<>(List.of(entradasSplitted[1])));
             }
-            objetoAtoresHS.add(Integer.parseInt(entradasSplitted[0]));
+
 
         }
 
@@ -295,9 +301,50 @@ public class Commands {
 
     }
 
+    public Result getGenderBias(ArrayList<String> entradas, ArrayList<ObjetoFIlmes> objetoFilmes)
+    {
+        HashMap<String,Integer> generoBias = new HashMap<>();
+
+        int contador = 0;
+        int limite = Integer.parseInt(entradas.get(0));
+        int ano = Integer.parseInt(entradas.get(1));
+
+        for (ObjetoFIlmes filmes : objetoFilmes)
+        {
+            if (filmes.getNumAtores() >= 11 && filmes.getAno() ==ano)
+            {
+                generoBias.put(filmes.getNome()+":"+filmes.getGenderBiasGender(),filmes.getGenderBias());
+            }
+        }
+
+        List<Map.Entry<String, Integer>> list = new ArrayList<>(generoBias.entrySet());
+
+        list.sort((e1, e2) -> {
+            int compare = Integer.compare(e2.getValue(), e1.getValue()); // decrescente
+            if (compare == 0) {
+                return e1.getKey().compareToIgnoreCase(e2.getKey());     // alfabetico
+            }
+            return compare;
+        });
+
+        StringBuilder sb = new StringBuilder();
+
+        for (Map.Entry<String, Integer> entry : list) {
+            contador++;
+            if (contador > limite)
+            {
+                break;
+            }
+            sb.append(entry.getKey()).append(":").append(entry.getValue()).append("\n");
+        }
+
+        return new Result(true, "", sb.toString().trim());
+    }
+
 
     public Result insertDirector(ArrayList<String> entradas, ArrayList<ObjetoRealizador> objetoRealizadores, HashMap<String,Integer> objetoRealizadoresHM, HashSet<Integer> objetoRealizadoresHM2, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM, ArrayList<ObjetoFIlmes> objetoFilmes, HashMap<String,ArrayList<ObjetoRealizador>> objetoRealizadoresARHM)
         {
+
         String linhaCompleta = entradas.toString().replace("[","").replace("]","").replace(", "," ");
         String[] entradasSplitted = linhaCompleta.split(";");
 
@@ -328,6 +375,7 @@ public class Commands {
             objetoRealizadores.add(novoRealizador); // cria um novo objeto realizador
             objetoRealizadoresHM.put(entradasSplitted[1], 1);
             objetoRealizadoresHM2.add(Integer.parseInt(entradasSplitted[0]));
+
 
             ArrayList<ObjetoRealizador> novosFilmeRealizador = new ArrayList<>();
             novosFilmeRealizador.add(novoRealizador);
@@ -457,7 +505,7 @@ public class Commands {
                 "TOP_MOVIES_WITH_GENDER_BIAS <num> <year>\n" + // em progresso
                 "TOP_6_DIRECTORS_WITHIN_FAMILY <year-start> <year-end>\n" + // jose
                 "INSERT_ACTOR <id>;<name>;<gender>;<movie-id>\n" + // feito - quebrado
-                "INSERT_DIRECTOR <id>;<name>;<movie-id>\n" + // feito - quebrado
+                "INSERT_DIRECTOR <id>;<name>;<movie-id>\n" + // feito - vcorrigido
                 "DISTANCE_BETWEEN_ACTORS <actor-1>,<actor-2>\n" + // jose
                 "HELP\n" +
                 "QUIT");

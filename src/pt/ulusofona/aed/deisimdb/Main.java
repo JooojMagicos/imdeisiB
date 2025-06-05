@@ -32,6 +32,7 @@ public class Main
 
     static ArrayList<ObjetoGeneroFilmes> objetoGeneroFilmes = new ArrayList<>();
     static ArrayList<ObjetoLinhaIncorreta> objetoLinhasIncorretas = new ArrayList<>();
+
     static ArrayList<ObjetoMovieVotes> objetoMovieVotes = new ArrayList<>();
     static HashMap<Integer,ObjetoMovieVotes> objetoMovieVotesHM = new HashMap<>();
 
@@ -60,6 +61,7 @@ public class Main
         objetoAtores = new ArrayList<>();
         objetoAtoresHM = new HashMap<>();
         objetoAtoresHM2 = new HashMap<>();
+        objetoAtoresHS = new HashSet<>();
 
         objetoLinhasIncorretas = new ArrayList<>();
         objetoGeneroFilmes = new ArrayList<>();
@@ -203,6 +205,7 @@ public class Main
                                     ObjetoAtor ator = new ObjetoAtor(id, nome, genero, idFilme);
                                     objetoAtores.add(ator);
 
+
                                     if (objetoAtoresHM.containsKey(nome))
                                     {
                                         objetoAtoresHM.get(nome).add(ator);
@@ -221,11 +224,14 @@ public class Main
                                     }
                                     else
                                     {
+
                                         ArrayList<ObjetoAtor> atorFilmes = new ArrayList<>();
                                         ArrayList<String> nomes = new ArrayList<>();
                                         nomes.add(nome);
                                         atorFilmes.add(ator);
+
                                         objetoAtoresHM.put(nome,atorFilmes);
+                                        objetoAtoresHS.add(id);
                                         if (objetoAtoresHM2.containsKey(idFilme))
                                         {
                                             objetoAtoresHM2.get(idFilme).add(nome);
@@ -622,42 +628,7 @@ public class Main
             case "TOP_MOVIES_WITH_GENDER_BIAS" ->
             {
 
-                HashMap<String,Integer> generoBias = new HashMap<>();
-
-                int contador = 0;
-                int limite = Integer.parseInt(entradas.get(0));
-                int ano = Integer.parseInt(entradas.get(1));
-
-                for (ObjetoFIlmes filmes : objetoFilmes)
-                {
-                    if (filmes.getNumAtores() >= 11 && filmes.getAno() ==ano)
-                    {
-                        generoBias.put(filmes.getNome()+":"+filmes.getGenderBiasGender(),filmes.getGenderBias());
-                    }
-                }
-
-                List<Map.Entry<String, Integer>> list = new ArrayList<>(generoBias.entrySet());
-
-                list.sort((e1, e2) -> {
-                    int compare = Integer.compare(e2.getValue(), e1.getValue()); // decrescente
-                    if (compare == 0) {
-                        return e1.getKey().compareToIgnoreCase(e2.getKey());     // alfabetico
-                    }
-                    return compare;
-                });
-
-                StringBuilder sb = new StringBuilder();
-
-                for (Map.Entry<String, Integer> entry : list) {
-                    contador++;
-                    if (contador > limite)
-                    {
-                        break;
-                    }
-                    sb.append(entry.getKey()).append(":").append(entry.getValue()).append("\n");
-                }
-
-                return new Result(true, "", sb.toString().trim());
+                return new Commands().getGenderBias(entradas,objetoFilmes);
             }
             case "INSERT_DIRECTOR" ->
             {
@@ -665,37 +636,50 @@ public class Main
             }case "INSERT_ACTOR" ->
             {
                 return new Commands().insertActor(entradas, objetoFilmesHM, objetoAtoresHS, objetoAtoresHM, objetoAtores, objetoAtoresHM2);
-            }case "TOP_VOTED_ACTORS" -> {
+            }case "TOP_VOTED_ACTORS" ->
+            {
+
+                HashMap<String,Double> atoresNotas = new HashMap<>();
+                for (ObjetoMovieVotes value : objetoMovieVotesHM.values())
+                {
+                    if (!objetoFilmesHM.containsKey(value.getMovieId())) { continue; }
+
+                    if (objetoFilmesHM.get(value.getMovieId()).getAno() == Integer.parseInt(entradas.get(1)))
+                    {
+                        ArrayList<ObjetoAtor> atores = objetoFilmesHM.get(value.getMovieId()).getAtoresObj();
+                        for (ObjetoAtor atores2 : atores)
+                        {
+                            if (!atoresNotas.containsKey(atores2.getNome()))
+                            {
+                                atoresNotas.put(atores2.getNome(),value.getRating());
+                            }
+                            else
+                            {
+                                atoresNotas.replace(atores2.getNome(), (atoresNotas.get(atores2.getNome())+ value.getRating())/2);
+                            }
+                        }
+                    }
+                }
+                List<Map.Entry<String, Double>> listaAtores = new ArrayList<>(atoresNotas.entrySet());
+
+                // Ordenar a lista manualmente pela nota (decrescente) e depois pelo nome (alfabético)
 
 
-                ArrayList<String[]> resultados = new ArrayList<>();
+                int limite = Integer.parseInt(entradas.get(0));
+                StringBuilder saidaBuilder = new StringBuilder();
+                int contador = 0;
 
-//                for (ObjetoMovieVotes votos : objetoMovieVotesHM.values()) {
-//                    if(objetoFilmesHM.containsKey(votos.getMovieId())){
-//                        for (ArrayList<ObjetoAtor> listaAtores : objetoAtoresHM.values()) {
-//                            for (ObjetoAtor ator : listaAtores) {
-//                                if (ator.getMovieId() == votos.getMovieId()) {
-//                                    resultados.add(new String[]{ator.getNome(), String.valueOf(votos.getRating())});
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//
-//                }
+                for (Map.Entry<String, Double> entry : listaAtores) {
 
-//                resultados.sort((a, b) -> Double.compare(Double.parseDouble(b[1]), Double.parseDouble(a[1])));
-//
-//                if (resultados.size() > Integer.parseInt(entradas.get(0))) {
-//                    resultados = new ArrayList<>(resultados.subList(0, Integer.parseInt(entradas.get(0))));
-//                }
-//
-                  StringBuilder saidaBuilder = new StringBuilder();
-//                for (String[] par : resultados) {
-//                    saidaBuilder.append(par[0]).append(":").append(par[1]).append("\n");
-//                }
+                    if (contador >= limite)  { break; }
+                    saidaBuilder.append(entry.getKey())
+                        .append(": ")
+                        .append(String.format("%.1f", entry.getValue()))
+                        .append("\n");
+                    contador++;
+                }
 
-                return new Result(true, "", saidaBuilder.toString());
+            return new Result(true, "", saidaBuilder.toString());
             }
 
 
@@ -745,10 +729,10 @@ public class Main
 
 
       System.out.println(execute("GET_ACTORS_BY_DIRECTOR 0 ze abc").result);
-      System.out.println(execute("INSERT_DIRECTOR 29283;ze abc;319067").result);
+      System.out.println(execute("INSERT_ACTOR 17;teste;F;319067").result);
         System.out.println(execute("GET_ACTORS_BY_DIRECTOR 0 ze abc").result);
         System.out.println(objetoRealizadoresARHM.get("Robert Gordon"));
-      System.out.println(execute("GET_ACTORS_BY_DIRECTOR 0 Robert Gordon").result);
+      System.out.println(execute("GET_MOVIES_ACTOR_YEAR 2011 teste").result);
         System.out.println(execute("GET_ACTORS_BY_DIRECTOR 0 ze abc").result);
 
 
@@ -760,6 +744,14 @@ public class Main
 //      {
 //          System.out.println(printafilmes.toString());
 //      }
+        String command2 = "TOP_VOTED_ACTORS 5 2011"; // Pegue os 3 melhores atores em filmes de 2023
+        Result result = execute(command2);
+
+        if (result.success) {
+            System.out.println(result.result); // Exibe o resultado se funcionou
+        } else {
+            System.out.println("Erro ao executar o comando: " + command2);
+        }
 
 
       end = System.currentTimeMillis();
