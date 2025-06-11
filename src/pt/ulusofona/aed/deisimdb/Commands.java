@@ -45,7 +45,7 @@ public class Commands {
             }
 
         }
-        System.out.println(nomeCompleto);
+
 
         if (objetoRealizadoresHM.containsKey(nomeCompleto))
         {
@@ -60,7 +60,7 @@ public class Commands {
     public Result countActorsIn2Years(ArrayList<String> entradas, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM)
     {
         int count = 0;
-        long start = System.currentTimeMillis();
+
         for (ArrayList<ObjetoAtor> atores : objetoAtoresHM.values())
         {
             for (ObjetoAtor atorFilmes : atores)
@@ -80,8 +80,7 @@ public class Commands {
                 }
             }
         }
-        long end = System.currentTimeMillis();
-        System.out.println("Tempo de execucao: " + (end - start) + " ms");
+
 
         return new Result(true,"", Integer.toString(count));
     }
@@ -254,81 +253,100 @@ public class Commands {
         return new Result(true, "", mesComMaisFilmes + ":" + maxCount);
     }
 
-    public Result insertActor (ArrayList<String> entradas, HashMap<Integer, ObjetoFIlmes> objetoFilmesHM, HashSet<Integer> objetoAtoresHS, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM, ArrayList<ObjetoAtor> objetoAtores, ArrayList<ObjetoFIlmes> objetoFilmes)
+    public Result insertActor (ArrayList<String> entradas, HashMap<Integer, ObjetoFIlmes> objetoFilmesHM, HashSet<Integer> objetoAtoresHS, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM, ArrayList<ObjetoAtor> objetoAtores, HashMap<Integer,ArrayList<String>> objetoAtoresHM2)
     {
         String linhaCompleta = entradas.toString().replace("[","").replace("]","").replace(", "," ");
         String[] entradasSplitted = linhaCompleta.split(";");
 
+        if (entradasSplitted.length != 4) { return new Result(false,"entrada invalida","Erro"); }
 
-        if (entradasSplitted.length != 4) {
-            return new Result(false, "INSERT_ACTOR", "Erro");
+        if (objetoAtoresHS.contains(Integer.parseInt(entradasSplitted[0])))
+        {
+            return new Result(false,"id DUPLICADO","Erro");
         }
+        else
+        {
+            if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[3])))
+            {
+
+                ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[3]));
+                filme.setNumAtores(entradasSplitted[2]);
+                filme.setAtoresObj(new ObjetoAtor(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], entradasSplitted[2],Integer.parseInt(entradasSplitted[3]) ));
+                objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[3]), filme);
 
 
-
-
-        String idStr = entradasSplitted[0].trim();
-        String nome = entradasSplitted[1].trim();
-        String genero = entradasSplitted[2].trim();
-        String filmeIdStr = entradasSplitted[3].trim();
-
-
-        int id, movieId;
-        try {
-            id = Integer.parseInt(idStr);         // idStr = entradasSplitted[0].trim()
-            movieId = Integer.parseInt(filmeIdStr); // movieIdStr = entradasSplitted[3].trim()
-        } catch (NumberFormatException e) {
-            return new Result(false, "INSERT_ACTOR", "Erro"); // Not a valid int
-        }
-
-        if (idStr.isEmpty() || nome.isEmpty() || genero.isEmpty() || filmeIdStr.isEmpty()) {
-            return new Result(false, "INSERT_ACTOR", "Erro");
-        }
-
-        if (!genero.toUpperCase().equals("M") && !genero.toUpperCase().equals("F")) {
-            return new Result(false, "GENERO", "Erro");
-        }
-
-        if(Integer.parseInt(entradasSplitted[0]) <= 0 || Integer.parseInt(entradasSplitted[3]) <= 0){
-            return new Result(false, "Negativo", "Erro");
-        }
-
-
-
-        if (!objetoAtoresHS.contains(Integer.parseInt(entradasSplitted[0]))) {
-           
-
-            ObjetoAtor ator = new ObjetoAtor(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], entradasSplitted[2], Integer.parseInt(entradasSplitted[3]));
-
-
-            if (objetoAtoresHM.containsKey(entradasSplitted[1]) || objetoAtoresHS.contains(Integer.parseInt(entradasSplitted[0]))) {
-                return new Result(false, "nome DUPLICADO", "Erro");
             } else {
-
-                if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[3])))
-                {
-                    ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[3]));
-                    int indexFilme = objetoFilmes.indexOf(filme);
-                    filme.setNumAtores(entradasSplitted[2]);
-                    objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[3]), filme);
-                    objetoFilmes.set(indexFilme, filme);
-                }
-                else { return new Result(false, "filme inexistente", "Erro"); }
-
-                ArrayList<ObjetoAtor> atorFilmes = new ArrayList<>();
-                atorFilmes.add(ator);
-                objetoAtoresHM.put(entradasSplitted[1], atorFilmes);
-                objetoAtoresHS.add(Integer.parseInt(entradasSplitted[0]));
-
+                return new Result(false, "filme inexistente", "Erro");
             }
 
-            return new Result(true, "", "OK");
+            objetoAtores.add(new ObjetoAtor(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], entradasSplitted[2],Integer.parseInt(entradasSplitted[3]) ));
+            ArrayList<ObjetoAtor> filmesDele = new ArrayList<>();
+            filmesDele.add(new ObjetoAtor(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], entradasSplitted[2],Integer.parseInt(entradasSplitted[3])));
+            objetoAtoresHM.put(entradasSplitted[1], filmesDele);
+            objetoAtoresHS.add(Integer.parseInt(entradasSplitted[0]));
+
+            if (objetoAtoresHM2.containsKey(Integer.parseInt(entradasSplitted[3])))
+            {
+                objetoAtoresHM2.get(Integer.parseInt(entradasSplitted[3])).add(entradasSplitted[1]);
+            }
+            else
+            {
+                objetoAtoresHM2.put(Integer.parseInt(entradasSplitted[3]), new ArrayList<>(List.of(entradasSplitted[1])));
+            }
+
+
+        }
+
+        return new Result(true,"","OK");
 
     }
 
-    public Result insertDirector(ArrayList<String> entradas, ArrayList<ObjetoRealizador> objetoRealizadores, HashMap<String,Integer> objetoRealizadoresHM, HashSet<Integer> objetoRealizadoresHM2, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM, ArrayList<ObjetoFIlmes> objetoFilmes, HashMap<String,ArrayList<ObjetoRealizador>> objetoRealizadoresARHM){
+    public Result getGenderBias(ArrayList<String> entradas, ArrayList<ObjetoFIlmes> objetoFilmes)
+    {
+        HashMap<String,Integer> generoBias = new HashMap<>();
+
+        int contador = 0;
+        int limite = Integer.parseInt(entradas.get(0));
+        int ano = Integer.parseInt(entradas.get(1));
+
+        for (ObjetoFIlmes filmes : objetoFilmes)
+        {
+            if (filmes.getNumAtores() >= 11 && filmes.getAno() ==ano)
+            {
+                generoBias.put(filmes.getNome()+":"+filmes.getGenderBiasGender(),filmes.getGenderBias());
+            }
+        }
+
+        List<Map.Entry<String, Integer>> list = new ArrayList<>(generoBias.entrySet());
+
+        list.sort((e1, e2) -> {
+            int compare = Integer.compare(e2.getValue(), e1.getValue()); // decrescente
+            if (compare == 0) {
+                return e1.getKey().compareToIgnoreCase(e2.getKey());     // alfabetico
+            }
+            return compare;
+        });
+
+        StringBuilder sb = new StringBuilder();
+
+        for (Map.Entry<String, Integer> entry : list) {
+            contador++;
+            if (contador > limite)
+            {
+                break;
+            }
+            sb.append(entry.getKey()).append(":").append(entry.getValue()).append("\n");
+        }
+
+        return new Result(true, "", sb.toString().trim());
+    }
+
+
+    public Result insertDirector(ArrayList<String> entradas, ArrayList<ObjetoRealizador> objetoRealizadores, HashMap<String,Integer> objetoRealizadoresHM, HashSet<Integer> objetoRealizadoresHM2, HashMap<Integer,ObjetoFIlmes> objetoFilmesHM, ArrayList<ObjetoFIlmes> objetoFilmes, HashMap<String,ArrayList<ObjetoRealizador>> objetoRealizadoresARHM)
+        {
+
         String linhaCompleta = entradas.toString().replace("[","").replace("]","").replace(", "," ");
-        String[] entradasSplitted = entradas.get(0).split(";");
+        String[] entradasSplitted = linhaCompleta.split(";");
 
         if (entradasSplitted.length != 3) { return new Result(false,"entrada invalida","Erro"); }
 
@@ -338,21 +356,30 @@ public class Commands {
         }
         else
         {
-            if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[2])))
+            if (objetoFilmesHM.containsKey(Integer.parseInt(entradasSplitted[2]))) // insere o realizador no filme se o filme existir
             {
+
                 ObjetoFIlmes filme = objetoFilmesHM.get(Integer.parseInt(entradasSplitted[2]));
                 int indexFilme = objetoFilmes.indexOf(filme);
-                filme.setNumRealizadores(1);
-                filme.setRealizadores(entradasSplitted[1]);
-                objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[2]),filme);
-                objetoFilmes.set(indexFilme,filme);
-            }
-            else { return new Result(false,"filme inexistente","Erro"); }
+                filme.setNumRealizadores(1); // adiciona 1 no filme
+                filme.setRealizadores(entradasSplitted[1]); // seta o nome do cara
+                objetoFilmesHM.replace(Integer.parseInt(entradasSplitted[2]), filme); // faz replace do objeto filme no hashmap
+                objetoFilmes.set(indexFilme,filme); // faz replace no arraylist, tem que estar na mesma ordem por causa dos testes do professor.
 
-            objetoRealizadores.add(new ObjetoRealizador(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], Integer.parseInt(entradasSplitted[2])));
+
+            } else {
+                return new Result(false, "filme inexistente", "Erro");
+            }
+
+            ObjetoRealizador novoRealizador = new ObjetoRealizador(Integer.parseInt(entradasSplitted[0]), entradasSplitted[1], Integer.parseInt(entradasSplitted[2]));
+            objetoRealizadores.add(novoRealizador); // cria um novo objeto realizador
             objetoRealizadoresHM.put(entradasSplitted[1], 1);
             objetoRealizadoresHM2.add(Integer.parseInt(entradasSplitted[0]));
-            objetoRealizadoresARHM.put(entradasSplitted[1], objetoRealizadores);
+
+
+            ArrayList<ObjetoRealizador> novosFilmeRealizador = new ArrayList<>();
+            novosFilmeRealizador.add(novoRealizador);
+            objetoRealizadoresARHM.put(entradasSplitted[1],novosFilmeRealizador);
 
         }
 
@@ -399,7 +426,7 @@ public class Commands {
         return new Result(true, "", sb.toString().trim());
     }
 
-    public Result getActorsByDirector (ArrayList<String> entradas, HashMap<String,ArrayList<ObjetoRealizador>> objetoRealizadoresARHM, HashMap<String,ArrayList<ObjetoAtor>> objetoAtoresHM){
+    public Result getActorsByDirector (ArrayList<String> entradas, HashMap<String,ArrayList<ObjetoRealizador>> objetoRealizadoresARHM, HashMap<Integer,ArrayList<String>> objetoAtoresHM2){
 
         StringBuilder nomeBuilder = new StringBuilder();
 
@@ -409,31 +436,44 @@ public class Commands {
                 nomeBuilder.append(" ");
             }
         }
-
-
+        ArrayList<ObjetoRealizador> realizadors = new ArrayList<>();
         String nomeCompleto = nomeBuilder.toString();
         HashMap<String,Integer> ocorrencias = new HashMap<>();
-        String saida = "";
 
-        if (objetoRealizadoresARHM.get(nomeCompleto) == null) { return new Result(false,"Diretor Inexistente","No results"); }
-
-
-        for (ObjetoRealizador filmesRealizador : objetoRealizadoresARHM.get(nomeCompleto))
+        if (objetoRealizadoresARHM.containsKey(nomeCompleto) == true)
         {
-            for (ArrayList<ObjetoAtor> filmes : objetoAtoresHM.values())
+            realizadors = new ArrayList<>(objetoRealizadoresARHM.get(nomeCompleto));
+
+        }
+        else { return new Result(false,"Diretor Inexistente","No results"); }
+
+        for (ObjetoRealizador value : realizadors)
+        {
+            if (objetoAtoresHM2.containsKey(value.getMovieId()))
             {
-                for (ObjetoAtor atores : filmes)
+
+                for (String nomeAtor : objetoAtoresHM2.get(value.getMovieId()))
                 {
-                    if (atores.getMovieId() == filmesRealizador.getMovieId()) {
-                        if (ocorrencias.containsKey(atores.getNome())) {
-                            ocorrencias.put(atores.getNome(), ocorrencias.get(atores.getNome()) + 1);
-                        } else {
-                            ocorrencias.put(atores.getNome(), 1);
-                        }
+
+                    if (ocorrencias.containsKey(nomeAtor))
+                    {
+                        ocorrencias.get(nomeAtor);
+
+                        ocorrencias.replace(nomeAtor, ocorrencias.get(nomeAtor) + 1);
+                    }
+                    else
+                    {
+
+                        ocorrencias.put(nomeAtor, 1);
                     }
                 }
             }
         }
+
+        if (objetoRealizadoresARHM.get(nomeCompleto) == null) { return new Result(false,"Diretor Inexistente","No results"); }
+
+
+
         StringBuilder saidaBuilder = new StringBuilder();
         for (String nomeAtor : ocorrencias.keySet()) {
             int vezes = ocorrencias.get(nomeAtor);
@@ -442,6 +482,7 @@ public class Commands {
                 saidaBuilder.append(nomeAtor).append(":").append(vezes).append("\n");
             }
         }
+        saidaBuilder.delete(saidaBuilder.length()-1,saidaBuilder.length());
 
         return new Result(true, "", saidaBuilder.toString());
     }
@@ -464,7 +505,7 @@ public class Commands {
                 "TOP_MOVIES_WITH_GENDER_BIAS <num> <year>\n" + // em progresso
                 "TOP_6_DIRECTORS_WITHIN_FAMILY <year-start> <year-end>\n" + // jose
                 "INSERT_ACTOR <id>;<name>;<gender>;<movie-id>\n" + // feito - quebrado
-                "INSERT_DIRECTOR <id>;<name>;<movie-id>\n" + // feito - quebrado
+                "INSERT_DIRECTOR <id>;<name>;<movie-id>\n" + // feito - vcorrigido
                 "DISTANCE_BETWEEN_ACTORS <actor-1>,<actor-2>\n" + // jose
                 "HELP\n" +
                 "QUIT");

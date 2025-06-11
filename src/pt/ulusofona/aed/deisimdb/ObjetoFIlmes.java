@@ -53,8 +53,10 @@ public class ObjetoFIlmes {
 
     public int getGenderBias()
     {
-        float result = 0.000f;
+
+        double result;
         genderBias = numAtores + numAtrizes;
+
         if(numAtores>numAtrizes)
         {
             result = genderBias;
@@ -63,7 +65,14 @@ public class ObjetoFIlmes {
             System.out.println(result);
             return (int)result;
         }
-        else { return (numAtrizes*100)/genderBias; }
+        else
+        {
+            result = genderBias;
+            System.out.println((numAtrizes*100)/result);
+            result = Math.round((numAtrizes*100)/result);
+            System.out.println(result);
+            return (int)result;
+        }
 
     }
 
